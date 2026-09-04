@@ -1,0 +1,309 @@
+from flask import Flask, render_template_string, request, jsonify, session
+from flask_cors import CORS
+import secrets
+import hashlib
+from datetime import datetime, timedelta
+import json
+from pathlib import Path
+
+app = Flask(__name__)
+app.secret_key = secrets.token_hex(32)
+CORS(app)
+
+# === LICENSE MANAGER (rút gọn) ===
+class LicenseManager:
+    def __init__(self):
+        self.secret_key = secrets.token_hex(32)
+        self.licenses = {}
+        
+    def create_license(self, script_id, duration_hours=48, max_uses=3, metadata=None):
+        key_id = secrets.token_hex(16)
+        key_string = f"{script_id}_{key_id}_{secrets.token_hex(8)}"
+        
+        self.licenses[key_id] = {
+            "key": key_string,
+            "script_id": script_id,
+            "created": datetime.now().isoformat(),
+            "expires": (datetime.now() + timedelta(hours=duration_hours)).isoformat(),
+            "max_uses": max_uses,
+            "uses_left": max_uses,
+            "metadata": metadata or {}
+        }
+        return key_string
+
+# === HTML ===
+HTML = '''
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔑 Get License Key</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+        .container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 32px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: #aaa;
+            margin: 10px 0 30px 0;
+            font-size: 14px;
+        }
+        .input-group {
+            margin: 15px 0;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #f7971e;
+        }
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            width: 100%;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            color: #000;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(247, 151, 30, 0.3);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .key-display {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px dashed #f7971e;
+            position: relative;
+        }
+        .key-display .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(247,151,30,0.2);
+            border: 1px solid #f7971e;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .key-display .copy-btn:hover {
+            background: rgba(247,151,30,0.4);
+        }
+        .status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        .status-success { background: rgba(0,200,83,0.2); border: 1px solid #00c853; color: #00c853; }
+        .status-error { background: rgba(255,0,0,0.2); border: 1px solid #ff0000; color: #ff0000; }
+        .hidden { display: none; }
+        .info {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+        .info span { color: #f7971e; }
+        .mt-10 { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 License Key</h1>
+        <p class="subtitle">Nhập thông tin để nhận key dùng thử</p>
+        
+        <div class="input-group">
+            <label>📧 Email (tuỳ chọn)</label>
+            <input type="email" id="email" placeholder="your@email.com">
+        </div>
+        <div class="input-group">
+            <label>📝 Ghi chú (tuỳ chọn)</label>
+            <input type="text" id="note" placeholder="Lý do cần key...">
+        </div>
+        
+        <button class="btn" id="getKeyBtn">🚀 Lấy key ngay</button>
+        
+        <div id="keySection" class="hidden">
+            <div class="key-display">
+                <span id="keyText">Đang tạo...</span>
+                <button class="copy-btn" onclick="copyKey()">📋 Copy</button>
+            </div>
+            <div id="keyInfo"></div>
+            <button class="btn mt-10" onclick="resetAll()" style="background: #555; color: #fff;">🔄 Tạo key khác</button>
+        </div>
+        
+        <div id="status" class="hidden"></div>
+        <div class="info">⏳ Key có hiệu lực <span>48 giờ</span> · Dùng được <span>3 lần</span></div>
+    </div>
+    
+    <script>
+        let currentKey = null;
+        
+        document.getElementById('getKeyBtn').addEventListener('click', function() {
+            this.disabled = true;
+            this.textContent = '⏳ Đang tạo...';
+            
+            const email = document.getElementById('email').value;
+            const note = document.getElementById('note').value;
+            
+            fetch('/get_key', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email: email, note: note })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    currentKey = data.key;
+                    document.getElementById('keyText').textContent = data.key;
+                    document.getElementById('keyInfo').innerHTML = `
+                        <div class="status status-success">
+                            📅 Hết hạn: ${data.expires_at}<br>
+                            🔄 Số lần dùng: ${data.max_uses}
+                        </div>
+                    `;
+                    document.getElementById('keySection').classList.remove('hidden');
+                    document.getElementById('getKeyBtn').classList.add('hidden');
+                    showStatus('✅ Key đã tạo! Copy và dùng ngay.', 'success');
+                } else {
+                    showStatus('❌ ' + data.message, 'error');
+                    this.disabled = false;
+                    this.textContent = '🚀 Lấy key ngay';
+                }
+            })
+            .catch(err => {
+                showStatus('❌ Lỗi: ' + err, 'error');
+                this.disabled = false;
+                this.textContent = '🚀 Lấy key ngay';
+            });
+        });
+        
+        function copyKey() {
+            if (!currentKey) return;
+            navigator.clipboard.writeText(currentKey).then(() => {
+                showStatus('✅ Đã copy key!', 'success');
+            }).catch(() => {
+                const text = document.getElementById('keyText').textContent;
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+                showStatus('✅ Đã copy key!', 'success');
+            });
+        }
+        
+        function showStatus(message, type) {
+            const el = document.getElementById('status');
+            el.className = 'status status-' + type;
+            el.textContent = message;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 5000);
+        }
+        
+        function resetAll() {
+            currentKey = null;
+            document.getElementById('keySection').classList.add('hidden');
+            document.getElementById('getKeyBtn').classList.remove('hidden');
+            document.getElementById('getKeyBtn').disabled = false;
+            document.getElementById('getKeyBtn').textContent = '🚀 Lấy key ngay';
+            document.getElementById('email').value = '';
+            document.getElementById('note').value = '';
+            document.getElementById('keyText').textContent = 'Đang tạo...';
+            document.getElementById('keyInfo').innerHTML = '';
+            showStatus('🔄 Đã reset.', 'success');
+        }
+    </script>
+</body>
+</html>
+'''
+
+lm = LicenseManager()
+
+@app.route('/')
+def index():
+    return render_template_string(HTML)
+
+@app.route('/get_key', methods=['POST'])
+def get_key():
+    data = request.json or {}
+    email = data.get('email', 'anonymous')
+    note = data.get('note', '')
+    
+    key = lm.create_license(
+        script_id='my_script',
+        duration_hours=48,
+        max_uses=3,
+        metadata={'email': email, 'note': note}
+    )
+    
+    return jsonify({
+        'status': 'ok',
+        'key': key,
+        'expires_at': (datetime.now() + timedelta(hours=48)).strftime('%Y-%m-%d %H:%M'),
+        'max_uses': 3
+    })
+
+if __name__ == '__main__':
+    print("""
+    ════════════════════════════════════════
+    🚀 WEB GET KEY - Không link4m
+    🌐 http://127.0.0.1:5000
+    ════════════════════════════════════════
+    """)
+    app.run(host='0.0.0.0', port=5000, debug=True)
