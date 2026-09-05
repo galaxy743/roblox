@@ -43,22 +43,19 @@
         .product-row .info { display: flex; align-items: center; gap: 14px; }
         .product-row .info .icon { font-size: 28px; }
         .product-row .info .name { color: #fff; font-weight: 600; font-size: 16px; }
-        .product-row .info .sub { color: #666; font-size: 12px; }
-        .product-row .badge { font-size: 9px; padding: 2px 10px; border-radius: 10px; font-weight: 700; text-transform: uppercase; margin-left: 8px; }
-        .badge.hot { background: #e74c3c; color: #fff; }
-        .badge.vip { background: #f39c12; color: #fff; }
-        .badge.pro { background: #6c5ce7; color: #fff; }
         .btn-getkey { background: #00b894; border: none; color: #fff; padding: 8px 20px; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s; }
         .btn-getkey:hover { background: #00a381; transform: scale(1.05); box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3); }
         .btn-getkey:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         
-        .hub-list { display: flex; flex-direction: column; gap: 10px; }
-        .hub-item-card { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .hub-item-card:hover { border-color: #6c5ce7; background: #1a1a2e; }
-        .hub-item-card .left { display: flex; align-items: center; gap: 12px; }
-        .hub-item-card .left .icon { font-size: 24px; }
-        .hub-item-card .left .name { color: #fff; font-weight: 600; }
-        .hub-item-card .arrow { color: #444; font-size: 20px; }
+        .price-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        .price-table th { background: #1a1a2e; color: #6c5ce7; padding: 12px; text-align: center; font-weight: 600; font-size: 14px; border-bottom: 2px solid #2a2a3e; }
+        .price-table td { padding: 12px; text-align: center; border-bottom: 1px solid #1a1a2e; color: #ddd; }
+        .price-table tr:hover td { background: #12121a; }
+        .price-table .highlight { color: #00b894; font-weight: 700; }
+        
+        .buy-btn { background: linear-gradient(90deg, #6c5ce7, #a29bfe); border: none; color: #fff; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 12px; }
+        .buy-btn:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3); }
+        .buy-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         
         .deposit-grid { display: flex; flex-direction: column; gap: 16px; }
         .deposit-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -114,7 +111,7 @@
         <div class="logo">✦ GetKey</div>
         <div class="header-right">
             <div class="balance">💰 <span id="balanceDisplay">0</span>đ</div>
-            <div id="authContainer"><div id="googleButton"></div></div>
+            <div id="authContainer"></div>
         </div>
     </div>
 
@@ -126,7 +123,7 @@
         <button data-tab="history">Lịch sử</button>
     </div>
 
-    <!-- Products Panel -->
+    <!-- Products Panel - Chỉ GalaxyHub, bỏ sub và hot -->
     <div id="products-panel" class="panel active">
         <div class="panel-title">🔥 <span>Sản phẩm</span> nổi bật</div>
         <div class="product-grid">
@@ -137,40 +134,40 @@
                 </div>
                 <button class="btn-getkey" data-hub="GalaxyHub">Lấy Key</button>
             </div>
-            <div class="product-row">
-                <div class="info">
-                    <span class="icon">🌙</span>
-                    <div><div class="name">LunarHub <span class="badge vip">VIP</span></div><div class="sub">Key VIP</div></div>
-                </div>
-                <button class="btn-getkey" data-hub="LunarHub">Lấy Key</button>
-            </div>
-            <div class="product-row">
-                <div class="info">
-                    <span class="icon">💜</span>
-                    <div><div class="name">NeonHub <span class="badge pro">Pro</span></div><div class="sub">Key Pro</div></div>
-                </div>
-                <button class="btn-getkey" data-hub="NeonHub">Lấy Key</button>
-            </div>
         </div>
     </div>
 
-    <!-- Buy Key Panel -->
+    <!-- Buy Key Panel - Bảng giá -->
     <div id="buykey-panel" class="panel">
-        <div class="panel-title">🛒 <span>Mua key</span> - chọn hub</div>
-        <div class="hub-list">
-            <div class="hub-item-card" data-hub="GalaxyHub">
-                <div class="left"><span class="icon">🌌</span><span class="name">GalaxyHub</span></div>
-                <span class="arrow">→</span>
-            </div>
-            <div class="hub-item-card" data-hub="LunarHub">
-                <div class="left"><span class="icon">🌙</span><span class="name">LunarHub</span></div>
-                <span class="arrow">→</span>
-            </div>
-            <div class="hub-item-card" data-hub="NeonHub">
-                <div class="left"><span class="icon">💜</span><span class="name">NeonHub</span></div>
-                <span class="arrow">→</span>
-            </div>
-        </div>
+        <div class="panel-title">🛒 <span>Bảng giá</span> key</div>
+        <table class="price-table">
+            <thead>
+                <tr>
+                    <th>⏱️ Thời Gian</th>
+                    <th>💰 Số Tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1 ngày</td>
+                    <td class="highlight">10.000đ</td>
+                </tr>
+                <tr>
+                    <td>7 ngày</td>
+                    <td class="highlight">40.000đ</td>
+                </tr>
+                <tr>
+                    <td>14 ngày</td>
+                    <td class="highlight">60.000đ</td>
+                </tr>
+                <tr>
+                    <td>30 ngày</td>
+                    <td class="highlight">100.000đ</td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="color:#888;font-size:13px;text-align:center;margin:8px 0;">📩 Mua key qua TikTok inbox bên dưới</div>
+        <button class="buy-btn" id="buyKeyTikTok">📱 Mua qua TikTok</button>
     </div>
 
     <!-- Deposit Panel -->
@@ -207,10 +204,22 @@
         <button class="close" id="closeKeyModal">&times;</button>
         <div class="modal-icon">🔑</div>
         <h2>Key của bạn</h2>
-        <div class="modal-sub" id="keyModalSub">GalaxyHub - Key Premium</div>
+        <div class="modal-sub" id="keyModalSub">GalaxyHub</div>
         <div class="key-display" id="keyDisplay">galaxy836</div>
         <div class="key-label">✨ Key đã được tạo thành công</div>
         <button class="btn-primary" id="keyModalCopy" style="background: #00b894; margin-top:12px;">📋 Sao chép key</button>
+    </div>
+</div>
+
+<!-- TikTok Buy Modal -->
+<div class="modal-overlay" id="tiktokModal">
+    <div class="modal-box">
+        <button class="close" id="closeTikTokModal">&times;</button>
+        <div class="modal-icon">📱</div>
+        <h2>Mua key qua TikTok</h2>
+        <div class="modal-sub" style="margin-bottom:20px;">Inbox cho mình để đặt mua key nhé!</div>
+        <a href="https://www.tiktok.com/@galaxy8143?_r=1&_t=ZS-99CDKkynM7G" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none;background:linear-gradient(90deg,#ff0050,#ff6b6b);color:#fff;padding:14px;border-radius:12px;font-weight:700;font-size:18px;text-align:center;transition:0.3s;">📩 Inbox TikTok ngay</a>
+        <button class="btn-primary" id="closeTikTokBtn" style="background:#2a2a3e;margin-top:12px;">Đóng</button>
     </div>
 </div>
 
@@ -239,13 +248,9 @@
         });
 
         googleInitialized = true;
-
-        if (!auth.isLoggedIn) {
-            renderGoogleButton();
-        }
+        renderGoogleButton();
     }
 
-    // Google script được tải async, nên kiểm tra vài lần cho đến khi sẵn sàng.
     const googleLoader = setInterval(() => {
         if (window.google?.accounts?.id) {
             initGoogle();
@@ -254,19 +259,38 @@
     }, 200);
 
     function renderGoogleButton() {
+        const container = document.getElementById('authContainer');
+        if (!container) return;
+        
+        // Nếu đã đăng nhập thì hiển thị user info, không render button
+        if (auth.isLoggedIn && auth.user) {
+            const picture = escapeHTML(auth.user.picture || '');
+            const name = escapeHTML(auth.user.name || 'Google User');
+            container.innerHTML = `
+                <div class="user-info">
+                    <img class="avatar" src="${picture}" alt="avatar" onerror="this.style.display='none'">
+                    <span class="name">${name}</span>
+                    <button class="logout-btn" id="logoutBtn" title="Đăng xuất">✕</button>
+                </div>
+            `;
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+            toggleButtons();
+            return;
+        }
+
+        // Chưa đăng nhập -> render button Google
+        container.innerHTML = `<div id="googleButton"></div>`;
         const button = document.getElementById('googleButton');
-
-        if (!button || !googleInitialized) return;
-
-        button.innerHTML = '';
-
-        google.accounts.id.renderButton(button, {
-            theme: 'outline',
-            size: 'medium',
-            text: 'signin_with',
-            shape: 'pill',
-            width: 190
-        });
+        if (button && googleInitialized) {
+            google.accounts.id.renderButton(button, {
+                theme: 'outline',
+                size: 'medium',
+                text: 'signin_with',
+                shape: 'pill',
+                width: 190
+            });
+        }
+        toggleButtons();
     }
 
     function handleGoogleLogin(response) {
@@ -275,40 +299,23 @@
                 showToast('❌ Không nhận được thông tin từ Google');
                 return;
             }
-
             const parts = response.credential.split('.');
-            if (parts.length !== 3) {
-                throw new Error('Google ID token không hợp lệ');
-            }
-
-            // Đọc payload của ID token để lấy tên/email/avatar.
-            // Việc này chỉ để hiển thị ở frontend.
-            const base64 = parts[1]
-                .replace(/-/g, '+')
-                .replace(/_/g, '/');
-
+            if (parts.length !== 3) throw new Error('Invalid token');
+            const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
             const json = decodeURIComponent(
-                atob(base64)
-                    .split('')
-                    .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                    .join('')
+                atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
             );
-
             const payload = JSON.parse(json);
-
             const user = {
                 name: payload.name || 'Người dùng Google',
                 email: payload.email || '',
                 picture: payload.picture || '',
                 googleId: payload.sub || ''
             };
-
             auth.user = user;
             auth.isLoggedIn = true;
-
             saveAuth();
-            updateAuthUI();
-
+            renderGoogleButton();
             showToast(`👋 Chào ${user.name}, đăng nhập thành công!`);
         } catch (error) {
             console.error('Google Login Error:', error);
@@ -318,12 +325,9 @@
 
     function loadAuth() {
         const saved = localStorage.getItem('authUser');
-
         if (saved) {
             try {
                 const user = JSON.parse(saved);
-
-                // Xóa tài khoản mock cũ nếu còn trong localStorage.
                 if (user && user.googleId) {
                     auth.user = user;
                     auth.isLoggedIn = true;
@@ -334,8 +338,7 @@
                 localStorage.removeItem('authUser');
             }
         }
-
-        updateAuthUI();
+        renderGoogleButton();
     }
 
     function saveAuth() {
@@ -346,79 +349,28 @@
         }
     }
 
-    function updateAuthUI() {
-        const container = document.getElementById('authContainer');
-
-        if (!container) return;
-
-        if (auth.isLoggedIn && auth.user) {
-            const picture = escapeHTML(auth.user.picture || '');
-            const name = escapeHTML(auth.user.name || 'Google User');
-
-            container.innerHTML = `
-                <div class="user-info">
-                    <img
-                        class="avatar"
-                        src="${picture}"
-                        alt="avatar"
-                        onerror="this.style.display='none'"
-                    >
-                    <span class="name">${name}</span>
-                    <button class="logout-btn" id="logoutBtn" title="Đăng xuất">✕</button>
-                </div>
-            `;
-
-            document.getElementById('logoutBtn')?.addEventListener('click', logout);
-        } else {
-            container.innerHTML = `<div id="googleButton"></div>`;
-
-            // Nếu Google đã tải xong thì render ngay.
-            renderGoogleButton();
-        }
-
-        toggleButtons();
-    }
-
     function logout() {
         auth.user = null;
         auth.isLoggedIn = false;
-
         saveAuth();
-
         if (window.google?.accounts?.id) {
             google.accounts.id.disableAutoSelect();
         }
-
-        updateAuthUI();
+        renderGoogleButton();
         showToast('Đã đăng xuất.');
     }
 
     function escapeHTML(text) {
-        return String(text || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+        return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
 
     function toggleButtons() {
         const loggedIn = auth.isLoggedIn;
-
-        document.querySelectorAll(
-            '.btn-getkey, .hub-item-card, .deposit-btn, #confirmDeposit'
-        ).forEach(el => {
-            if (
-                el.tagName === 'BUTTON' ||
-                el.classList.contains('hub-item-card')
-            ) {
+        document.querySelectorAll('.btn-getkey, .deposit-btn, #confirmDeposit, #buyKeyTikTok').forEach(el => {
+            if (el.tagName === 'BUTTON') {
                 el.disabled = !loggedIn;
-
-                if (el.tagName === 'BUTTON' && !loggedIn) {
-                    el.title = 'Vui lòng đăng nhập Google';
-                } else {
-                    el.title = '';
-                }
+                if (!loggedIn) el.title = 'Vui lòng đăng nhập Google';
+                else el.title = '';
             }
         });
     }
@@ -433,217 +385,4 @@
     };
 
     function updateBalance() {
-        document.getElementById('balanceDisplay').textContent = state.balance.toLocaleString();
-        localStorage.setItem('keyBalance', state.balance);
-    }
-    updateBalance();
-
-    // Tab switching
-    document.querySelectorAll('.nav button').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(this.dataset.tab + '-panel').classList.add('active');
-        });
-    });
-
-    // Generate key
-    function generateKey() {
-        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        let key = 'galaxy';
-        for (let i = 0; i < 6; i++) key += chars[Math.floor(Math.random() * chars.length)];
-        return key;
-    }
-
-    // Show key modal - FREE
-    function showKeyModal(hub) {
-        if (!auth.isLoggedIn) {
-            showToast('Vui lòng đăng nhập để lấy key, ông chủ.');
-            return;
-        }
-        const key = generateKey();
-        state.currentHub = hub;
-        document.getElementById('keyDisplay').textContent = key;
-        document.getElementById('keyModalSub').textContent = `${hub} - Key Premium`;
-        document.getElementById('keyModal').classList.add('active');
-        
-        // Lưu lịch sử (free)
-        const now = new Date();
-        state.history.unshift({
-            key: key,
-            amount: 0,
-            hub: hub,
-            type: 'free',
-            date: now.toLocaleDateString('vi-VN'),
-            time: now.toLocaleTimeString('vi-VN'),
-            timestamp: now.getTime()
-        });
-        localStorage.setItem('keyHistory', JSON.stringify(state.history));
-        renderHistory();
-    }
-
-    document.getElementById('closeKeyModal').addEventListener('click', () => {
-        document.getElementById('keyModal').classList.remove('active');
-    });
-    document.getElementById('keyModal').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('active');
-    });
-
-    // Copy key
-    document.getElementById('keyModalCopy').addEventListener('click', function() {
-        const key = document.getElementById('keyDisplay').textContent;
-        navigator.clipboard.writeText(key).then(() => {
-            showToast('📋 Đã sao chép key!');
-        }).catch(() => {
-            // Fallback
-            const textarea = document.createElement('textarea');
-            textarea.value = key;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            showToast('📋 Đã sao chép key!');
-        });
-    });
-
-    // Product "Lấy Key"
-    document.querySelectorAll('.btn-getkey').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            showKeyModal(this.dataset.hub);
-        });
-    });
-
-    // Buy key list -> chuyển sang deposit
-    document.querySelectorAll('.hub-item-card').forEach(item => {
-        item.addEventListener('click', function() {
-            if (!auth.isLoggedIn) {
-                showToast('Vui lòng đăng nhập, ông chủ.');
-                return;
-            }
-            const hub = this.dataset.hub;
-            state.currentHub = hub;
-            showToast(`Chọn ${hub}, chuyển sang nạp tiền.`);
-            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            document.querySelector('[data-tab="deposit"]').classList.add('active');
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('deposit-panel').classList.add('active');
-        });
-    });
-
-    // Deposit
-    let selectedAmount = 0;
-    document.querySelectorAll('.deposit-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (!auth.isLoggedIn) { showToast('Vui lòng đăng nhập, ông chủ.'); return; }
-            document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            selectedAmount = parseInt(this.dataset.amount);
-            document.getElementById('bankInfo').classList.add('show');
-            showToast('Đã chọn mệnh giá ' + selectedAmount.toLocaleString() + 'đ');
-        });
-    });
-
-    document.getElementById('confirmDeposit').addEventListener('click', function() {
-        if (!auth.isLoggedIn) { showToast('Vui lòng đăng nhập, ông chủ.'); return; }
-        if (!selectedAmount) {
-            showToast('Vui lòng chọn mệnh giá, ông chủ.');
-            return;
-        }
-        state.balance += selectedAmount;
-        updateBalance();
-        
-        // Tạo key luôn sau khi nạp
-        const key = generateKey();
-        const now = new Date();
-        state.history.unshift({
-            key: key,
-            amount: selectedAmount,
-            hub: state.currentHub || 'GalaxyHub',
-            type: 'paid',
-            date: now.toLocaleDateString('vi-VN'),
-            time: now.toLocaleTimeString('vi-VN'),
-            timestamp: now.getTime()
-        });
-        localStorage.setItem('keyHistory', JSON.stringify(state.history));
-        renderHistory();
-        
-        showToast(`✅ Nạp thành công ${selectedAmount.toLocaleString()}đ! Key: ${key}`);
-        selectedAmount = 0;
-        document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
-        document.getElementById('bankInfo').classList.remove('show');
-    });
-
-    function renderHistory() {
-        const list = document.getElementById('historyList');
-        if (state.history.length === 0) {
-            list.innerHTML = '<li class="empty-state">📭 Chưa có giao dịch nào</li>';
-            return;
-        }
-        list.innerHTML = state.history.map(item => `
-            <li>
-                <div>
-                    <span class="key">${item.key}</span>
-                    <span class="hub-tag">${item.hub}</span>
-                    ${item.type === 'free' ? '<span style="color:#00b894;font-size:10px;">FREE</span>' : ''}
-                </div>
-                <div style="text-align:right;">
-                    <div class="amount">${item.type === 'free' ? 'FREE' : '-' + item.amount.toLocaleString() + 'đ'}</div>
-                    <div class="date">${item.date} ${item.time}</div>
-                </div>
-            </li>
-        `).join('');
-    }
-    renderHistory();
-
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        clearTimeout(t._timeout);
-        t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
-    }
-</script>
-
-<script>
-(function(){
-  const TIKTOK_URL = "https://www.tiktok.com/@galaxy8143?_r=1&_t=ZS-99CDKkynM7G";
-
-  window.showBuyKey = function(){
-    let modal = document.getElementById("tiktokBuyModal");
-    if(!modal){
-      modal = document.createElement("div");
-      modal.id = "tiktokBuyModal";
-      modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;";
-      modal.innerHTML = `
-        <div style="width:min(420px,100%);background:#171224;border:1px solid #3c315b;border-radius:18px;padding:26px;text-align:center;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,.45)">
-          <div style="font-size:26px;font-weight:800;margin-bottom:10px">Mua key</div>
-          <div style="color:#bdb6d1;line-height:1.5;margin-bottom:20px">Muốn mua key, hãy inbox qua TikTok cho mình.</div>
-          <a href="${TIKTOK_URL}" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none;background:#fff;color:#111;padding:12px 16px;border-radius:12px;font-weight:700;margin-bottom:10px">Inbox TikTok</a>
-          <button onclick="document.getElementById('tiktokBuyModal').remove()" style="width:100%;border:0;background:#2b243b;color:#fff;padding:11px 16px;border-radius:12px;font-weight:600">Đóng</button>
-        </div>`;
-      document.body.appendChild(modal);
-      modal.addEventListener("click", e => { if(e.target === modal) modal.remove(); });
-    }
-  };
-
-  // Make common Buy Key buttons use the new modal.
-  document.addEventListener("click", function(e){
-    const btn = e.target.closest("button, a");
-    if(!btn) return;
-    const txt = (btn.textContent || "").trim().toLowerCase();
-    if(txt.includes("mua key")){
-      const href = btn.getAttribute("href") || "";
-      if(!href || href === "#" || href.startsWith("javascript:")){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        window.showBuyKey();
-      }
-    }
-  }, true);
-})();
-</script>
-
-</body>
-</html>
+        document.getElementById('balanceDisplay').textContent 
