@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GET KEY - Nền tảng lấy key miễn phí</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <title>GET KEY</title>
     <style>
+        /* Reset hoàn toàn */
         * {
             margin: 0;
             padding: 0;
@@ -13,506 +13,391 @@
         }
 
         body {
-            background: #0b0b12;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: #e8e8f0;
-            min-height: 100vh;
+            background: #0e0e16;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             padding: 20px;
         }
 
-        .app {
-            max-width: 1200px;
+        .container {
+            background: #13131e;
+            border-radius: 20px;
+            padding: 30px 28px 36px;
+            max-width: 500px;
             width: 100%;
-            background: #11111a;
-            border-radius: 28px;
-            padding: 28px 32px 40px;
             border: 1px solid #252535;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
         }
 
-        .app::before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            right: -20%;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(100, 80, 255, 0.04), transparent 70%);
-            pointer-events: none;
-        }
-
-        /* ===== NAVBAR ===== */
+        /* === NAVBAR === */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #1e1e2e;
-            flex-wrap: wrap;
-            gap: 12px 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            flex-wrap: wrap;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #1f1f2f;
+            margin-bottom: 20px;
         }
 
         .logo {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
-            color: #fff;
-            letter-spacing: -0.5px;
+            color: #ffffff;
+            letter-spacing: -0.3px;
         }
 
         .logo span {
-            background: linear-gradient(135deg, #8b7aff, #5a4bd1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #7a6ae8;
         }
 
         .nav-links {
             display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            color: #8a8aa2;
-            text-decoration: none;
-            font-size: 14px;
+            gap: 10px;
+            font-size: 12px;
             font-weight: 500;
-            transition: color 0.2s;
-            letter-spacing: 0.3px;
+            color: #8888a0;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
-        .nav-links a:hover {
-            color: #c8c8e8;
+        .nav-links span {
+            cursor: default;
         }
 
-        .nav-links a.active {
-            color: #8b7aff;
+        .nav-links .active {
+            color: #7a6ae8;
         }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .nav-right .user-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #1e1e2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8a8aa2;
-            border: 1px solid #2a2a3e;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .nav-right .user-icon:hover {
-            border-color: #8b7aff;
-            color: #fff;
-        }
-
-        /* ===== HERO ===== */
-        .hero {
-            margin-top: 32px;
+        /* === HEADER === */
+        .header {
             text-align: center;
-            position: relative;
-            z-index: 2;
+            margin-bottom: 18px;
         }
 
-        .hero .badge {
-            display: inline-block;
-            background: rgba(100, 80, 255, 0.12);
-            border: 1px solid rgba(100, 80, 255, 0.2);
-            padding: 4px 18px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #8b7aff;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 14px;
-        }
-
-        .hero h1 {
-            font-size: 48px;
+        .header h1 {
+            font-size: 34px;
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
 
-        .hero h1 span {
-            background: linear-gradient(135deg, #8b7aff, #6c5ce7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .header h1 span {
+            color: #7a6ae8;
         }
 
-        .hero .sub {
-            font-size: 18px;
+        .header .sub {
+            font-size: 16px;
             font-weight: 600;
-            color: #b0b0c8;
-            margin-top: 4px;
-            letter-spacing: 0.3px;
+            color: #b8b8d0;
+            margin-top: 2px;
         }
 
-        .hero .desc {
-            max-width: 580px;
-            margin: 10px auto 0;
-            font-size: 15px;
-            color: #7a7a92;
-            line-height: 1.6;
+        .header .desc {
+            font-size: 13px;
+            color: #6a6a82;
+            margin-top: 8px;
+            line-height: 1.5;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .hero-actions {
+        /* === DIVIDER === */
+        .divider {
+            border: none;
+            border-top: 1px solid #1f1f2f;
+            margin: 16px 0 14px 0;
+        }
+
+        /* === ACTION ROW === */
+        .action-row {
             display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 24px;
+            gap: 12px;
+            margin-bottom: 6px;
             flex-wrap: wrap;
         }
 
         .btn-primary {
-            padding: 14px 40px;
-            background: linear-gradient(135deg, #7c6af0, #5a4bd1);
+            flex: 1;
+            padding: 12px 0;
+            background: #6c5ce7;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             color: #fff;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 8px 24px rgba(90, 75, 209, 0.35);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            text-align: center;
+            transition: 0.2s;
+            min-width: 120px;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(90, 75, 209, 0.5);
-            background: linear-gradient(135deg, #8b7aff, #6c5ce7);
+            background: #7a6ae8;
         }
 
-        .btn-secondary {
-            padding: 14px 36px;
+        .btn-outline {
+            flex: 1;
+            padding: 12px 0;
             background: transparent;
-            border: 1.5px solid #3a3a4e;
-            border-radius: 12px;
-            color: #c8c8e0;
-            font-size: 16px;
+            border: 1.5px solid #33334a;
+            border-radius: 10px;
+            color: #b0b0c8;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            text-align: center;
+            transition: 0.2s;
+            min-width: 120px;
         }
 
-        .btn-secondary:hover {
-            border-color: #8b7aff;
+        .btn-outline:hover {
+            border-color: #6c5ce7;
             color: #fff;
-            background: rgba(124, 106, 240, 0.06);
         }
 
-        /* ===== PRODUCTS ===== */
-        .products {
-            margin-top: 44px;
-            padding-top: 28px;
-            border-top: 1px solid #1e1e2e;
-            position: relative;
-            z-index: 2;
-        }
-
-        .products .section-title {
-            font-size: 15px;
+        /* === PRODUCT SECTION === */
+        .section-label {
+            font-size: 13px;
             font-weight: 600;
             color: #6a6a82;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            margin-top: 14px;
+            margin-bottom: 4px;
         }
 
-        .products .section-sub {
-            font-size: 14px;
-            color: #7a7a92;
-            margin-bottom: 20px;
+        .section-sub {
+            font-size: 13px;
+            color: #6a6a82;
+            margin-bottom: 14px;
         }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 18px;
-        }
-
-        .product-card {
-            background: #16161f;
-            border-radius: 16px;
-            padding: 20px 22px;
-            border: 1px solid #222232;
-            transition: all 0.25s ease;
+        .product-list {
             display: flex;
             flex-direction: column;
+            gap: 12px;
         }
 
-        .product-card:hover {
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #181825;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid #222236;
+            transition: 0.2s;
+        }
+
+        .product-item:hover {
             border-color: #3a3a5a;
-            background: #1a1a26;
-            transform: translateY(-2px);
         }
 
-        .product-card .name {
-            font-size: 19px;
+        .product-info .name {
+            font-size: 17px;
             font-weight: 700;
             color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .product-card .name i {
-            color: #8b7aff;
-            font-size: 20px;
+        .product-info .name i {
+            color: #7a6ae8;
+            margin-right: 8px;
         }
 
-        .product-card .desc {
-            font-size: 14px;
-            color: #7a7a92;
-            margin-top: 4px;
-            line-height: 1.5;
-            flex: 1;
+        .product-info .desc {
+            font-size: 13px;
+            color: #6a6a82;
+            margin-top: 2px;
         }
 
-        .product-card .btn-get {
-            margin-top: 16px;
-            padding: 10px 0;
-            background: #2a2a3e;
+        .btn-get {
+            padding: 8px 20px;
+            background: #2a2a42;
             border: none;
-            border-radius: 10px;
-            color: #c8c8e8;
-            font-size: 14px;
+            border-radius: 8px;
+            color: #c0c0d8;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            text-decoration: none;
-            width: 100%;
+            transition: 0.2s;
+            white-space: nowrap;
         }
 
-        .product-card .btn-get:hover {
+        .btn-get:hover {
             background: #3a3a5a;
             color: #fff;
         }
 
-        .product-card .btn-get.active {
-            background: linear-gradient(135deg, #7c6af0, #5a4bd1);
+        .btn-get.active {
+            background: #6c5ce7;
             color: #fff;
-            box-shadow: 0 4px 16px rgba(90, 75, 209, 0.3);
         }
 
-        .product-card .btn-get.active:hover {
-            background: linear-gradient(135deg, #8b7aff, #6c5ce7);
-            transform: scale(1.02);
+        .btn-get.active:hover {
+            background: #7a6ae8;
         }
 
-        /* ===== FOOTER ===== */
-        .footer-note {
-            margin-top: 36px;
+        /* === FOOTER === */
+        .footer {
+            margin-top: 22px;
+            padding-top: 14px;
+            border-top: 1px solid #1f1f2f;
             text-align: center;
-            font-size: 13px;
-            color: #4a4a5e;
-            border-top: 1px solid #1a1a28;
-            padding-top: 20px;
-            position: relative;
-            z-index: 2;
-            letter-spacing: 0.3px;
+            font-size: 12px;
+            color: #4a4a62;
         }
 
-        .footer-note i {
-            margin-right: 6px;
+        .footer i {
+            margin: 0 4px;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .app {
-                padding: 18px 16px 30px;
+        /* === RESPONSIVE === */
+        @media (max-width: 460px) {
+            .container {
+                padding: 18px 14px 24px;
             }
             .navbar {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 12px;
-            }
-            .nav-left {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 10px;
             }
             .nav-links {
                 justify-content: center;
-                gap: 12px;
-                flex-wrap: wrap;
+                font-size: 11px;
+                gap: 8px;
             }
-            .nav-right {
-                justify-content: center;
+            .header h1 {
+                font-size: 28px;
             }
-            .hero h1 {
-                font-size: 32px;
-            }
-            .hero .sub {
-                font-size: 16px;
-            }
-            .hero-actions {
+            .action-row {
                 flex-direction: column;
-                align-items: center;
             }
-            .btn-primary,
-            .btn-secondary {
+            .product-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .btn-get {
                 width: 100%;
-                justify-content: center;
-            }
-            .product-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 420px) {
-            .hero h1 {
-                font-size: 26px;
-            }
-            .nav-links a {
-                font-size: 12px;
-            }
-            .logo {
-                font-size: 18px;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="app">
+<div class="container">
 
     <!-- ===== NAVBAR ===== -->
-    <nav class="navbar">
-        <div class="nav-left">
-            <div class="logo">GET <span>KEY</span></div>
-            <div class="nav-links">
-                <a href="#" class="active">TRANG CHỦ</a>
-                <a href="#">SẢN PHẨM</a>
-                <a href="#">HƯỚNG DẪN</a>
-                <a href="#">NAP TIỀN</a>
-                <a href="#">LỊCH SỬ</a>
-                <a href="#">HỖ TRỢ</a>
-            </div>
+    <div class="navbar">
+        <div class="logo">GET <span>KEY</span></div>
+        <div class="nav-links">
+            <span class="active">TRANG CHỦ</span>
+            <span>SẢN PHẨM</span>
+            <span>HƯỚNG DẪN</span>
+            <span>NAP TIỀN</span>
+            <span>LỊCH SỬ</span>
+            <span>HỖ TRỢ</span>
         </div>
-        <div class="nav-right">
-            <div class="user-icon"><i class="fas fa-user"></i></div>
-        </div>
-    </nav>
+    </div>
 
-    <!-- ===== HERO ===== -->
-    <section class="hero">
-        <div class="badge">⚡ MIỄN PHÍ 100%</div>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
         <h1>GET <span>KEY</span></h1>
         <div class="sub">NỀN TẢNG LẤY KEY MIỄN PHÍ</div>
-        <p class="desc">
-            Hệ thống lấy key tự động nhanh chóng, an toàn và hoàn toàn miễn phí cho mọi người.
-        </p>
-        <div class="hero-actions">
-            <a href="#" class="btn-primary" id="getKeyNow">
-                <i class="fas fa-key"></i> LẤY KEY NGAY
-            </a>
-            <a href="#" class="btn-secondary">
-                <i class="fas fa-book-open"></i> HƯỚNG DẪN
-            </a>
-        </div>
-    </section>
+        <div class="desc">Hệ thống lấy key tự động nhanh chóng, an toàn và hoàn toàn miễn phí cho mọi người.</div>
+    </div>
+
+    <!-- ===== DIVIDER ===== -->
+    <hr class="divider" />
+
+    <!-- ===== ACTION ROW ===== -->
+    <div class="action-row">
+        <button class="btn-primary" id="getKeyNow">LẤY KEY NGAY</button>
+        <button class="btn-outline">HƯỚNG DẪN</button>
+    </div>
+
+    <!-- ===== DIVIDER ===== -->
+    <hr class="divider" />
 
     <!-- ===== PRODUCTS ===== -->
-    <section class="products">
-        <div class="section-title"><i class="fas fa-crown" style="margin-right: 8px;"></i> SẢN PHẨM NỔI BẬT</div>
-        <div class="section-sub">Chọn sản phẩm bạn muốn lấy key</div>
+    <div class="section-label">SẢN PHẨM NỔI BẬT</div>
+    <div class="section-sub">Chọn sản phẩm bạn muốn lấy key</div>
 
-        <div class="product-grid">
-            <!-- GalaxyHub -->
-            <div class="product-card">
+    <div class="product-list">
+
+        <!-- GalaxyHub -->
+        <div class="product-item">
+            <div class="product-info">
                 <div class="name"><i class="fas fa-galaxy"></i> GalaxyHub</div>
                 <div class="desc">Nền tảng hỗ trợ game &amp; tiện ích mạnh mẽ, tối ưu trải nghiệm.</div>
-                <button class="btn-get active" data-product="galaxy">LẤY KEY</button>
             </div>
+            <button class="btn-get active" data-product="galaxy">LẤY KEY</button>
+        </div>
 
-            <!-- LunarHub -->
-            <div class="product-card">
+        <!-- LunarHub -->
+        <div class="product-item">
+            <div class="product-info">
                 <div class="name"><i class="fas fa-moon"></i> LunarHub</div>
                 <div class="desc">Giải pháp toàn diện cho game thủ và người dùng công nghệ.</div>
-                <button class="btn-get" data-product="lunar">LẤY KEY</button>
             </div>
+            <button class="btn-get" data-product="lunar">LẤY KEY</button>
+        </div>
 
-            <!-- NeonHub -->
-            <div class="product-card">
+        <!-- NeonHub -->
+        <div class="product-item">
+            <div class="product-info">
                 <div class="name"><i class="fas fa-bolt"></i> NeonHub</div>
                 <div class="desc">Công cụ hiện đại, tốc độ cao, bảo mật và dễ sử dụng.</div>
-                <button class="btn-get" data-product="neon">LẤY KEY</button>
             </div>
+            <button class="btn-get" data-product="neon">LẤY KEY</button>
         </div>
-    </section>
+
+    </div>
 
     <!-- ===== FOOTER ===== -->
-    <div class="footer-note">
-        <i class="fas fa-shield-alt"></i> Bảo mật tuyệt đối · Mỗi key chỉ 1 thiết bị · 4h làm mới
+    <div class="footer">
+        <i class="fas fa-shield-alt"></i> Bảo mật tuyệt đối · Mỗi key chỉ 1 thiết bị
     </div>
 
 </div>
 
+<!-- ===== FONT AWESOME ===== -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
 <!-- ===== JAVASCRIPT ===== -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
         const getKeyBtn = document.getElementById('getKeyNow');
         const productBtns = document.querySelectorAll('.btn-get');
 
-        // Hàm gọi API lấy key
         async function fetchKey(product = 'galaxy') {
             try {
-                const response = await fetch('/get-key', {
+                const res = await fetch('/get-key', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ product })
                 });
-                const data = await response.json();
+                const data = await res.json();
                 if (data.success) {
-                    alert('🎉 Key của bạn: ' + data.key + '\nSản phẩm: ' + product.toUpperCase() + '\nKey đã gán cho thiết bị này, ông chủ.');
+                    alert('🎉 Key: ' + data.key + '\nSản phẩm: ' + product.toUpperCase());
                 } else {
-                    alert('❌ ' + (data.error || 'Không thể lấy key, thử lại sau.'));
+                    alert('❌ ' + (data.error || 'Lỗi, thử lại.'));
                 }
-            } catch (err) {
-                alert('❌ Lỗi kết nối server, ông chủ.');
-                console.error(err);
+            } catch {
+                alert('❌ Lỗi kết nối, ông chủ.');
             }
         }
 
-        // Nút LẤY KEY NGAY (hero)
         getKeyBtn.addEventListener('click', function(e) {
             e.preventDefault();
             fetchKey('galaxy');
         });
 
-        // Các nút LẤY KEY trong sản phẩm
         productBtns.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -520,7 +405,6 @@
                 fetchKey(product);
             });
         });
-
     });
 </script>
 
