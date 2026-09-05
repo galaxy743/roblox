@@ -1,253 +1,235 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Key System</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #0a0a0f; color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; padding: 20px; }
-        .container { max-width: 600px; width: 100%; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
-        .logo { font-size: 24px; font-weight: 700; color: #fff; }
-        .logo span { color: #6c5ce7; }
-        .nav { display: flex; gap: 16px; flex-wrap: wrap; }
-        .nav button { background: transparent; border: none; color: #888; font-size: 14px; cursor: pointer; padding: 6px 12px; transition: 0.2s; }
-        .nav button:hover, .nav button.active { color: #fff; background: #1a1a2e; border-radius: 8px; }
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 20px 0; }
-        .product-card { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 20px 12px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .product-card:hover { border-color: #6c5ce7; background: #1a1a2e; }
-        .product-card .icon { font-size: 32px; margin-bottom: 8px; }
-        .product-card .name { font-weight: 600; color: #fff; }
-        .product-card .sub { font-size: 12px; color: #666; margin-top: 4px; }
-        .panel { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 20px; margin: 16px 0; display: none; }
-        .panel.active { display: block; }
-        .panel h3 { margin-bottom: 16px; color: #fff; font-weight: 400; }
-        .deposit-grid { display: flex; flex-direction: column; gap: 12px; }
-        .deposit-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-        .deposit-btn { background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 12px 24px; color: #fff; font-size: 16px; cursor: pointer; transition: 0.2s; min-width: 80px; }
-        .deposit-btn:hover { border-color: #6c5ce7; background: #22223a; }
-        .deposit-btn.selected { border-color: #6c5ce7; background: #2a2a4a; }
-        .bank-info { background: #0d0d14; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 3px solid #6c5ce7; }
-        .bank-info .label { color: #888; font-size: 12px; }
-        .bank-info .value { color: #fff; font-size: 16px; font-weight: 500; }
-        .bank-info .row { display: flex; justify-content: space-between; padding: 4px 0; }
-        .btn-primary { background: #6c5ce7; border: none; color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; transition: 0.2s; }
-        .btn-primary:hover { background: #5a4bd1; }
-        .history-list { list-style: none; }
-        .history-list li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1a1a2e; font-size: 14px; }
-        .history-list .key { color: #6c5ce7; font-weight: 500; }
-        .history-list .date { color: #666; font-size: 12px; }
-        .empty-state { text-align: center; color: #555; padding: 30px 0; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-overlay.active { display: flex; }
-        .modal-box { background: #12121a; border: 1px solid #333; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%; }
-        .modal-box h2 { color: #fff; margin-bottom: 16px; }
-        .modal-box .close { float: right; background: none; border: none; color: #888; font-size: 24px; cursor: pointer; }
-        .modal-box .hub-item { padding: 12px 0; border-bottom: 1px solid #1a1a2e; color: #fff; }
-        .modal-box .hub-item:last-child { border: none; }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a1a2e; border: 1px solid #6c5ce7; padding: 12px 24px; border-radius: 8px; color: #fff; display: none; z-index: 2000; }
-        .toast.show { display: block; animation: fadeInUp 0.3s; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 500px) { .product-grid { grid-template-columns: 1fr 1fr; } }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="header">
-        <div class="logo">Key<span>Hub</span></div>
-        <div class="nav">
-            <button class="active" data-tab="products">Sản phẩm</button>
-            <button data-tab="buykey">Mua key</button>
-            <button data-tab="history">Lịch sử</button>
-        </div>
-    </div>
+// dynamic_key_pool_system.js
+// Pool key động: mỗi người lấy key tiếp theo trong hàng đợi, key đã dùng không cấp lại
 
-    <!-- Products Panel - giữ nguyên GalaxyHub LunarHub NeonHub -->
-    <div id="products-panel" class="panel active">
-        <h3>Chọn sản phẩm</h3>
-        <div class="product-grid">
-            <div class="product-card" data-hub="GalaxyHub">
-                <div class="icon">🌌</div>
-                <div class="name">GalaxyHub</div>
-                <div class="sub">Key premium</div>
-            </div>
-            <div class="product-card" data-hub="LunarHub">
-                <div class="icon">🌙</div>
-                <div class="name">LunarHub</div>
-                <div class="sub">Key vip</div>
-            </div>
-            <div class="product-card" data-hub="NeonHub">
-                <div class="icon">💜</div>
-                <div class="name">NeonHub</div>
-                <div class="sub">Key pro</div>
-            </div>
-        </div>
-    </div>
+const crypto = require('crypto');
+const express = require('express');
+const session = require('express-session');
+const rateLimit = require('express-rate-limit');
+const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
+const app = express();
 
-    <!-- Buy Key Panel - thay thế hỗ trợ, không có hướng dẫn -->
-    <div id="buykey-panel" class="panel">
-        <h3>Nạp tiền mua key</h3>
-        <div class="deposit-grid">
-            <div class="deposit-row">
-                <button class="deposit-btn" data-amount="20000">20.000đ</button>
-                <button class="deposit-btn" data-amount="50000">50.000đ</button>
-                <button class="deposit-btn" data-amount="100000">100.000đ</button>
-            </div>
-            <div class="bank-info">
-                <div class="row"><span class="label">Ngân hàng</span><span class="value">ZaloPay</span></div>
-                <div class="row"><span class="label">Số tài khoản</span><span class="value">12455748</span></div>
-                <div class="row"><span class="label">Chủ tài khoản</span><span class="value">Nguyen Van Loc</span></div>
-                <div class="row"><span class="label">Nội dung CK</span><span class="value" style="font-size:12px; color:#6c5ce7;">Mã key + số tiền</span></div>
-            </div>
-            <button class="btn-primary" id="confirmDeposit">Xác nhận đã chuyển</button>
-        </div>
-    </div>
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL || 'redis://localhost:6379'
+});
+redisClient.on('error', (err) => console.error('Redis lỗi:', err));
+redisClient.connect();
 
-    <!-- History Panel -->
-    <div id="history-panel" class="panel">
-        <h3>Lịch sử mua key</h3>
-        <ul class="history-list" id="historyList">
-            <li class="empty-state">Chưa có lịch sử mua key</li>
-        </ul>
-    </div>
-</div>
+app.use(express.json());
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  secret: crypto.randomBytes(32).toString('hex'),
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: true, httpOnly: true, maxAge: 4 * 60 * 60 * 1000 }
+}));
 
-<!-- Modal hiển thị hub khi ấn sản phẩm -->
-<div class="modal-overlay" id="hubModal">
-    <div class="modal-box">
-        <button class="close" id="closeModal">&times;</button>
-        <h2 id="modalTitle">GalaxyHub</h2>
-        <div id="modalContent">
-            <div class="hub-item">🌌 GalaxyHub - Key bản quyền cao cấp</div>
-            <div class="hub-item">⚡ Tốc độ tối ưu, bảo mật hàng đầu</div>
-            <div class="hub-item">🛡️ Hỗ trợ 24/7 qua ZaloPay</div>
-        </div>
-        <button class="btn-primary" style="margin-top:16px;" id="modalBuyBtn">Mua key ngay</button>
-    </div>
-</div>
+// Tạo fingerprint thiết bị
+function getDeviceFingerprint(req) {
+  const parts = [
+    req.headers['user-agent'] || 'unknown',
+    req.ip || 'unknown',
+    req.headers['sec-ch-ua-platform'] || 'unknown'
+  ];
+  return crypto.createHash('sha256').update(parts.join('|')).digest('hex');
+}
 
-<div class="toast" id="toast"></div>
+// Tạo key theo số thứ tự
+function generateKeyFromIndex(index) {
+  const random = crypto.randomBytes(4).toString('hex');
+  return `galaxy${index}-${random}`;
+}
 
-<script>
-    const state = {
-        activeTab: 'products',
-        history: JSON.parse(localStorage.getItem('keyHistory')) || [],
-        currentHub: 'GalaxyHub'
-    };
+// Khởi tạo pool key nếu chưa có
+async function initKeyPool() {
+  const exists = await redisClient.exists('key:pool:counter');
+  if (!exists) {
+    await redisClient.set('key:pool:counter', 1);
+    // Pre-generate 100 key cho pool
+    for (let i = 1; i <= 100; i++) {
+      const key = generateKeyFromIndex(i);
+      const keyHash = crypto.createHash('sha256').update(key).digest('hex');
+      await redisClient.setEx(`key:pool:${keyHash}`, 4 * 60 * 60, JSON.stringify({
+        key: key,
+        index: i,
+        status: 'available',
+        createdAt: Date.now()
+      }));
+    }
+    console.log('Khởi tạo pool 100 key, ông chủ.');
+  }
+}
+initKeyPool();
 
-    // Tab switching
-    document.querySelectorAll('.nav button').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const tab = this.dataset.tab;
-            state.activeTab = tab;
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(tab + '-panel').classList.add('active');
+// Lấy key tiếp theo chưa dùng
+async function getNextAvailableKey() {
+  // Lấy tất cả key đang available
+  const keys = await redisClient.keys('key:pool:*');
+  let available = null;
+  let lowestIndex = Infinity;
+  
+  for (const keyHash of keys) {
+    const data = await redisClient.get(keyHash);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (parsed.status === 'available' && parsed.index < lowestIndex) {
+        lowestIndex = parsed.index;
+        available = parsed;
+      }
+    }
+  }
+  
+  return available;
+}
+
+// Đánh dấu key đã dùng và gán cho thiết bị
+async function assignKeyToDevice(keyData, fingerprint) {
+  const keyHash = crypto.createHash('sha256').update(keyData.key).digest('hex');
+  keyData.status = 'used';
+  keyData.assignedTo = fingerprint;
+  keyData.assignedAt = Date.now();
+  await redisClient.setEx(`key:pool:${keyHash}`, 4 * 60 * 60, JSON.stringify(keyData));
+  await redisClient.setEx(`device:${fingerprint}`, 4 * 60 * 60, keyData.key);
+  return keyData;
+}
+
+// Middleware kiểm tra thiết bị đã có key chưa
+async function checkDeviceHasKey(req, res, next) {
+  const fingerprint = getDeviceFingerprint(req);
+  const existing = await redisClient.get(`device:${fingerprint}`);
+  if (existing) {
+    // Kiểm tra key còn hiệu lực không
+    const keyHash = crypto.createHash('sha256').update(existing).digest('hex');
+    const keyData = await redisClient.get(`key:pool:${keyHash}`);
+    if (keyData) {
+      const parsed = JSON.parse(keyData);
+      if (parsed.status === 'used' && parsed.assignedTo === fingerprint) {
+        return res.json({
+          success: true,
+          key: existing,
+          message: 'Thiết bị đã có key, ông chủ. Key của bạn là: ' + existing
         });
-    });
+      }
+    }
+  }
+  next();
+}
 
-    // Product click -> show modal với đúng hub
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const hub = this.dataset.hub;
-            state.currentHub = hub;
-            document.getElementById('modalTitle').textContent = hub;
-            document.getElementById('modalContent').innerHTML = `
-                <div class="hub-item">🚀 ${hub} - Key độc quyền</div>
-                <div class="hub-item">🔐 Bảo mật cấp cao, không chia sẻ</div>
-                <div class="hub-item">⏳ Hạn sử dụng 4 giờ</div>
-                <div class="hub-item">💳 Thanh toán qua ZaloPay</div>
-            `;
-            document.getElementById('hubModal').classList.add('active');
-        });
-    });
-
-    // Modal controls
-    document.getElementById('closeModal').addEventListener('click', () => {
-        document.getElementById('hubModal').classList.remove('active');
-    });
-    document.getElementById('hubModal').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('active');
-    });
-
-    // Modal buy button -> chuyển sang tab mua key
-    document.getElementById('modalBuyBtn').addEventListener('click', function() {
-        document.getElementById('hubModal').classList.remove('active');
-        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-        document.querySelector('[data-tab="buykey"]').classList.add('active');
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('buykey-panel').classList.add('active');
-        state.activeTab = 'buykey';
-        showToast('Chuyển sang trang nạp tiền, ông chủ.');
-    });
-
-    // Deposit selection
-    let selectedAmount = 0;
-    document.querySelectorAll('.deposit-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            selectedAmount = parseInt(this.dataset.amount);
-            showToast('Đã chọn mệnh giá ' + selectedAmount.toLocaleString() + 'đ');
-        });
-    });
-
-    // Confirm deposit -> tạo key + lưu lịch sử
-    document.getElementById('confirmDeposit').addEventListener('click', function() {
-        if (!selectedAmount) {
-            showToast('Vui lòng chọn mệnh giá, ông chủ.');
-            return;
-        }
-        const key = 'galaxy' + Math.random().toString(36).slice(2, 8) + 
-                    Math.random().toString(36).slice(2, 6);
-        const now = new Date();
-        const historyEntry = {
+// Route lấy key mới (lấy key tiếp theo trong pool)
+app.post('/get-key', 
+  rateLimit({ windowMs: 4 * 60 * 60 * 1000, max: 1 }),
+  checkDeviceHasKey,
+  async (req, res) => {
+    try {
+      const fingerprint = getDeviceFingerprint(req);
+      
+      // Tìm key available tiếp theo
+      const nextKey = await getNextAvailableKey();
+      if (!nextKey) {
+        // Nếu hết key, tạo thêm 50 key mới
+        const counter = await redisClient.get('key:pool:counter');
+        const start = parseInt(counter) + 1;
+        for (let i = start; i < start + 50; i++) {
+          const key = generateKeyFromIndex(i);
+          const keyHash = crypto.createHash('sha256').update(key).digest('hex');
+          await redisClient.setEx(`key:pool:${keyHash}`, 4 * 60 * 60, JSON.stringify({
             key: key,
-            amount: selectedAmount,
-            hub: state.currentHub || 'GalaxyHub',
-            date: now.toLocaleDateString('vi-VN'),
-            time: now.toLocaleTimeString('vi-VN'),
-            timestamp: now.getTime()
-        };
-        state.history.unshift(historyEntry);
-        localStorage.setItem('keyHistory', JSON.stringify(state.history));
-        renderHistory();
-        showToast(`Key ${key} đã được tạo, ông chủ. Kiểm tra lịch sử.`);
-        selectedAmount = 0;
-        document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
-        document.querySelector('[data-tab="history"]').click();
-    });
-
-    function renderHistory() {
-        const list = document.getElementById('historyList');
-        if (state.history.length === 0) {
-            list.innerHTML = '<li class="empty-state">Chưa có lịch sử mua key</li>';
-            return;
+            index: i,
+            status: 'available',
+            createdAt: Date.now()
+          }));
         }
-        list.innerHTML = state.history.map(item => `
-            <li>
-                <div>
-                    <span class="key">${item.key}</span>
-                    <span style="color:#888;font-size:12px;margin-left:8px;">${item.hub}</span>
-                </div>
-                <div>
-                    <span style="color:#6c5ce7;">${item.amount.toLocaleString()}đ</span>
-                    <span class="date">${item.date} ${item.time}</span>
-                </div>
-            </li>
-        `).join('');
+        await redisClient.set('key:pool:counter', start + 50);
+        // Lấy lại key đầu tiên trong pool mới
+        const newKey = await getNextAvailableKey();
+        if (!newKey) {
+          return res.status(500).json({ error: 'Lỗi tạo key, ông chủ.' });
+        }
+        const assigned = await assignKeyToDevice(newKey, fingerprint);
+        return res.json({
+          success: true,
+          key: assigned.key,
+          index: assigned.index,
+          message: 'Key mới được cấp cho thiết bị này, ông chủ.'
+        });
+      }
+      
+      // Gán key cho thiết bị
+      const assigned = await assignKeyToDevice(nextKey, fingerprint);
+      res.json({
+        success: true,
+        key: assigned.key,
+        index: assigned.index,
+        message: `Key ${assigned.key} được gán cho thiết bị này, ông chủ.`
+      });
+    } catch (error) {
+      console.error('Lỗi get-key:', error);
+      res.status(500).json({ error: 'Lỗi server, ông chủ.' });
     }
-    renderHistory();
+});
 
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        clearTimeout(t._timeout);
-        t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
+// Kiểm tra key của thiết bị
+app.get('/my-key', async (req, res) => {
+  const fingerprint = getDeviceFingerprint(req);
+  const key = await redisClient.get(`device:${fingerprint}`);
+  if (!key) {
+    return res.status(404).json({ error: 'Chưa có key, hãy gọi /get-key, ông chủ.' });
+  }
+  res.json({
+    key: key,
+    message: 'Key của thiết bị này, ông chủ. Đúng vậy.'
+  });
+});
+
+// Admin: xem trạng thái pool
+app.get('/pool-status', async (req, res) => {
+  const keys = await redisClient.keys('key:pool:*');
+  let available = 0, used = 0;
+  for (const k of keys) {
+    const data = await redisClient.get(k);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (parsed.status === 'available') available++;
+      else used++;
     }
-</script>
-</body>
-</html>
+  }
+  const counter = await redisClient.get('key:pool:counter') || 0;
+  res.json({
+    totalKeys: keys.length,
+    available,
+    used,
+    nextIndex: parseInt(counter) + 1,
+    message: 'Trạng thái pool key, ông chủ.'
+  });
+});
+
+// Dọn key hết hạn
+setInterval(async () => {
+  try {
+    const keys = await redisClient.keys('key:pool:*');
+    const now = Date.now();
+    for (const key of keys) {
+      const data = await redisClient.get(key);
+      if (data) {
+        const parsed = JSON.parse(data);
+        // Key hết hạn sau 4h kể từ khi được gán
+        if (parsed.assignedAt && (now - parsed.assignedAt > 4 * 60 * 60 * 1000)) {
+          await redisClient.del(key);
+          // Xóa device mapping nếu có
+          if (parsed.assignedTo) {
+            await redisClient.del(`device:${parsed.assignedTo}`);
+          }
+          console.log(`Dọn key ${parsed.key} đã hết hạn.`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Lỗi dọn dẹp:', err);
+  }
+}, 15 * 60 * 1000);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Pool key động chạy tại ${PORT}, ông chủ.`);
+  console.log('Key 1 có người lấy -> key 2 cho người tiếp theo. Không ai dùng chung.');
+});
