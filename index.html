@@ -1,235 +1,357 @@
-// dynamic_key_pool_system.js
-// Pool key động: mỗi người lấy key tiếp theo trong hàng đợi, key đã dùng không cấp lại
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeyHub System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; padding: 20px; }
+        .container { max-width: 500px; width: 100%; }
+        
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .logo { font-size: 26px; font-weight: 800; background: linear-gradient(90deg, #6c5ce7, #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .balance { background: #1a1a2e; border: 1px solid #333; border-radius: 20px; padding: 6px 16px; font-size: 14px; color: #6c5ce7; font-weight: 600; }
+        .balance span { color: #fff; }
+        
+        /* Navigation */
+        .nav { display: flex; gap: 8px; background: #12121a; border-radius: 14px; padding: 4px; margin-bottom: 20px; border: 1px solid #222; }
+        .nav button { flex: 1; background: transparent; border: none; color: #666; font-size: 13px; font-weight: 500; padding: 10px 0; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .nav button:hover { color: #aaa; }
+        .nav button.active { background: #6c5ce7; color: #fff; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
+        
+        /* Panels */
+        .panel { display: none; animation: fadeIn 0.3s; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .panel-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 16px; }
+        .panel-title span { color: #6c5ce7; }
+        
+        /* Product Grid - Đẹp hơn */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+        .product-card { background: linear-gradient(145deg, #12121a, #1a1a2e); border: 1px solid #2a2a3e; border-radius: 16px; padding: 24px 12px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+        .product-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), transparent); opacity: 0; transition: 0.3s; }
+        .product-card:hover::before { opacity: 1; }
+        .product-card:hover { border-color: #6c5ce7; transform: translateY(-4px); box-shadow: 0 8px 30px rgba(108, 92, 231, 0.15); }
+        .product-card .icon { font-size: 36px; margin-bottom: 8px; display: block; }
+        .product-card .name { font-weight: 700; color: #fff; font-size: 16px; }
+        .product-card .sub { font-size: 11px; color: #666; margin-top: 4px; }
+        .product-card .badge { position: absolute; top: 8px; right: 8px; background: #6c5ce7; color: #fff; font-size: 8px; padding: 2px 8px; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
+        
+        /* Deposit */
+        .deposit-grid { display: flex; flex-direction: column; gap: 16px; }
+        .deposit-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .deposit-btn { background: #1a1a2e; border: 2px solid #2a2a3e; border-radius: 12px; padding: 14px 28px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; min-width: 90px; }
+        .deposit-btn:hover { border-color: #6c5ce7; background: #22223a; }
+        .deposit-btn.selected { border-color: #6c5ce7; background: #2a2a4a; box-shadow: 0 0 20px rgba(108, 92, 231, 0.2); }
+        
+        .bank-info { background: #0d0d14; border-radius: 12px; padding: 16px; border-left: 3px solid #6c5ce7; display: none; animation: fadeIn 0.3s; }
+        .bank-info.show { display: block; }
+        .bank-info .row { display: flex; justify-content: space-between; padding: 6px 0; }
+        .bank-info .label { color: #666; font-size: 13px; }
+        .bank-info .value { color: #fff; font-size: 15px; font-weight: 500; }
+        .bank-info .value.highlight { color: #6c5ce7; }
+        
+        .btn-primary { background: linear-gradient(90deg, #6c5ce7, #a29bfe); border: none; color: #fff; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 12px; }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        /* Hub list for Buy Key */
+        .hub-list { display: flex; flex-direction: column; gap: 10px; }
+        .hub-item-card { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .hub-item-card:hover { border-color: #6c5ce7; background: #1a1a2e; }
+        .hub-item-card .left { display: flex; align-items: center; gap: 12px; }
+        .hub-item-card .left .icon { font-size: 24px; }
+        .hub-item-card .left .name { color: #fff; font-weight: 600; }
+        .hub-item-card .left .price { color: #6c5ce7; font-size: 13px; }
+        .hub-item-card .arrow { color: #444; font-size: 20px; }
+        
+        /* History */
+        .history-list { list-style: none; max-height: 400px; overflow-y: auto; }
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-thumb { background: #6c5ce7; border-radius: 10px; }
+        .history-list li { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #1a1a2e; }
+        .history-list .key { color: #6c5ce7; font-weight: 600; font-size: 14px; }
+        .history-list .hub-tag { background: #1a1a2e; padding: 2px 10px; border-radius: 10px; font-size: 11px; color: #888; }
+        .history-list .amount { color: #6c5ce7; font-weight: 600; }
+        .history-list .date { color: #555; font-size: 12px; }
+        .empty-state { text-align: center; color: #444; padding: 40px 0; font-size: 14px; }
+        
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #12121a; border: 1px solid #333; border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; animation: fadeIn 0.3s; }
+        .modal-box .close { float: right; background: none; border: none; color: #666; font-size: 28px; cursor: pointer; transition: 0.3s; }
+        .modal-box .close:hover { color: #fff; }
+        .modal-box h2 { color: #fff; font-size: 22px; margin-bottom: 16px; }
+        .modal-box .hub-detail { padding: 10px 0; border-bottom: 1px solid #1a1a2e; color: #aaa; display: flex; align-items: center; gap: 12px; }
+        .modal-box .hub-detail:last-child { border: none; }
+        .modal-box .hub-detail .icon { font-size: 20px; }
+        
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a1a2e; border: 1px solid #6c5ce7; padding: 14px 28px; border-radius: 12px; color: #fff; display: none; z-index: 2000; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+        .toast.show { display: block; animation: fadeInUp 0.3s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        
+        @media (max-width: 450px) { .product-grid { grid-template-columns: 1fr 1fr; } .deposit-btn { min-width: 70px; padding: 12px 16px; font-size: 14px; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">✦ KeyHub</div>
+        <div class="balance">💰 <span id="balanceDisplay">0</span>đ</div>
+    </div>
 
-const crypto = require('crypto');
-const express = require('express');
-const session = require('express-session');
-const rateLimit = require('express-rate-limit');
-const RedisStore = require('connect-redis')(session);
-const redis = require('redis');
-const app = express();
+    <!-- Navigation -->
+    <div class="nav">
+        <button class="active" data-tab="products">Sản phẩm</button>
+        <button data-tab="buykey">Mua key</button>
+        <button data-tab="deposit">Nạp tiền</button>
+        <button data-tab="history">Lịch sử</button>
+    </div>
 
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
-redisClient.on('error', (err) => console.error('Redis lỗi:', err));
-redisClient.connect();
+    <!-- Products Panel -->
+    <div id="products-panel" class="panel active">
+        <div class="panel-title">🔥 <span>Sản phẩm</span> nổi bật</div>
+        <div class="product-grid">
+            <div class="product-card" data-hub="GalaxyHub">
+                <span class="badge">Hot</span>
+                <span class="icon">🌌</span>
+                <div class="name">GalaxyHub</div>
+                <div class="sub">Key Premium</div>
+            </div>
+            <div class="product-card" data-hub="LunarHub">
+                <span class="badge">VIP</span>
+                <span class="icon">🌙</span>
+                <div class="name">LunarHub</div>
+                <div class="sub">Key VIP</div>
+            </div>
+            <div class="product-card" data-hub="NeonHub">
+                <span class="badge">Pro</span>
+                <span class="icon">💜</span>
+                <div class="name">NeonHub</div>
+                <div class="sub">Key Pro</div>
+            </div>
+        </div>
+    </div>
 
-app.use(express.json());
-app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  secret: crypto.randomBytes(32).toString('hex'),
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: true, httpOnly: true, maxAge: 4 * 60 * 60 * 1000 }
-}));
+    <!-- Buy Key Panel -->
+    <div id="buykey-panel" class="panel">
+        <div class="panel-title">🛒 <span>Mua key</span> - chọn hub</div>
+        <div class="hub-list">
+            <div class="hub-item-card" data-hub="GalaxyHub">
+                <div class="left"><span class="icon">🌌</span><span class="name">GalaxyHub</span><span class="price">• 20.000đ</span></div>
+                <span class="arrow">→</span>
+            </div>
+            <div class="hub-item-card" data-hub="LunarHub">
+                <div class="left"><span class="icon">🌙</span><span class="name">LunarHub</span><span class="price">• 50.000đ</span></div>
+                <span class="arrow">→</span>
+            </div>
+            <div class="hub-item-card" data-hub="NeonHub">
+                <div class="left"><span class="icon">💜</span><span class="name">NeonHub</span><span class="price">• 100.000đ</span></div>
+                <span class="arrow">→</span>
+            </div>
+        </div>
+    </div>
 
-// Tạo fingerprint thiết bị
-function getDeviceFingerprint(req) {
-  const parts = [
-    req.headers['user-agent'] || 'unknown',
-    req.ip || 'unknown',
-    req.headers['sec-ch-ua-platform'] || 'unknown'
-  ];
-  return crypto.createHash('sha256').update(parts.join('|')).digest('hex');
-}
+    <!-- Deposit Panel -->
+    <div id="deposit-panel" class="panel">
+        <div class="panel-title">💳 <span>Nạp tiền</span></div>
+        <div class="deposit-grid">
+            <div class="deposit-row">
+                <button class="deposit-btn" data-amount="20000">20.000đ</button>
+                <button class="deposit-btn" data-amount="50000">50.000đ</button>
+                <button class="deposit-btn" data-amount="100000">100.000đ</button>
+            </div>
+            <div class="bank-info" id="bankInfo">
+                <div class="row"><span class="label">🏦 Ngân hàng</span><span class="value highlight">ZaloPay</span></div>
+                <div class="row"><span class="label">📋 Số tài khoản</span><span class="value">12455748</span></div>
+                <div class="row"><span class="label">👤 Chủ tài khoản</span><span class="value">Nguyen Van Loc</span></div>
+                <div class="row"><span class="label">📝 Nội dung</span><span class="value" style="font-size:12px;color:#6c5ce7;">Mã key + số tiền</span></div>
+            </div>
+            <button class="btn-primary" id="confirmDeposit">✅ Xác nhận đã chuyển khoản</button>
+        </div>
+    </div>
 
-// Tạo key theo số thứ tự
-function generateKeyFromIndex(index) {
-  const random = crypto.randomBytes(4).toString('hex');
-  return `galaxy${index}-${random}`;
-}
+    <!-- History Panel -->
+    <div id="history-panel" class="panel">
+        <div class="panel-title">📜 <span>Lịch sử</span> mua key</div>
+        <ul class="history-list" id="historyList">
+            <li class="empty-state">Chưa có giao dịch nào</li>
+        </ul>
+    </div>
+</div>
 
-// Khởi tạo pool key nếu chưa có
-async function initKeyPool() {
-  const exists = await redisClient.exists('key:pool:counter');
-  if (!exists) {
-    await redisClient.set('key:pool:counter', 1);
-    // Pre-generate 100 key cho pool
-    for (let i = 1; i <= 100; i++) {
-      const key = generateKeyFromIndex(i);
-      const keyHash = crypto.createHash('sha256').update(key).digest('hex');
-      await redisClient.setEx(`key:pool:${keyHash}`, 4 * 60 * 60, JSON.stringify({
-        key: key,
-        index: i,
-        status: 'available',
-        createdAt: Date.now()
-      }));
+<!-- Modal sản phẩm -->
+<div class="modal-overlay" id="hubModal">
+    <div class="modal-box">
+        <button class="close" id="closeModal">&times;</button>
+        <h2 id="modalTitle">🌌 GalaxyHub</h2>
+        <div id="modalContent">
+            <div class="hub-detail"><span class="icon">🚀</span> Key độc quyền, bảo mật cao</div>
+            <div class="hub-detail"><span class="icon">🔐</span> Không chia sẻ, 1 key 1 thiết bị</div>
+            <div class="hub-detail"><span class="icon">⏳</span> Hạn sử dụng 4 giờ</div>
+            <div class="hub-detail"><span class="icon">💳</span> Thanh toán qua ZaloPay</div>
+        </div>
+        <button class="btn-primary" id="modalBuyBtn">Mua key ngay</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const state = {
+        balance: parseInt(localStorage.getItem('keyBalance')) || 0,
+        history: JSON.parse(localStorage.getItem('keyHistory')) || [],
+        currentHub: 'GalaxyHub',
+        selectedAmount: 0
+    };
+
+    // Update balance display
+    function updateBalance() {
+        document.getElementById('balanceDisplay').textContent = state.balance.toLocaleString();
+        localStorage.setItem('keyBalance', state.balance);
     }
-    console.log('Khởi tạo pool 100 key, ông chủ.');
-  }
-}
-initKeyPool();
+    updateBalance();
 
-// Lấy key tiếp theo chưa dùng
-async function getNextAvailableKey() {
-  // Lấy tất cả key đang available
-  const keys = await redisClient.keys('key:pool:*');
-  let available = null;
-  let lowestIndex = Infinity;
-  
-  for (const keyHash of keys) {
-    const data = await redisClient.get(keyHash);
-    if (data) {
-      const parsed = JSON.parse(data);
-      if (parsed.status === 'available' && parsed.index < lowestIndex) {
-        lowestIndex = parsed.index;
-        available = parsed;
-      }
-    }
-  }
-  
-  return available;
-}
-
-// Đánh dấu key đã dùng và gán cho thiết bị
-async function assignKeyToDevice(keyData, fingerprint) {
-  const keyHash = crypto.createHash('sha256').update(keyData.key).digest('hex');
-  keyData.status = 'used';
-  keyData.assignedTo = fingerprint;
-  keyData.assignedAt = Date.now();
-  await redisClient.setEx(`key:pool:${keyHash}`, 4 * 60 * 60, JSON.stringify(keyData));
-  await redisClient.setEx(`device:${fingerprint}`, 4 * 60 * 60, keyData.key);
-  return keyData;
-}
-
-// Middleware kiểm tra thiết bị đã có key chưa
-async function checkDeviceHasKey(req, res, next) {
-  const fingerprint = getDeviceFingerprint(req);
-  const existing = await redisClient.get(`device:${fingerprint}`);
-  if (existing) {
-    // Kiểm tra key còn hiệu lực không
-    const keyHash = crypto.createHash('sha256').update(existing).digest('hex');
-    const keyData = await redisClient.get(`key:pool:${keyHash}`);
-    if (keyData) {
-      const parsed = JSON.parse(keyData);
-      if (parsed.status === 'used' && parsed.assignedTo === fingerprint) {
-        return res.json({
-          success: true,
-          key: existing,
-          message: 'Thiết bị đã có key, ông chủ. Key của bạn là: ' + existing
+    // Tab switching
+    document.querySelectorAll('.nav button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(this.dataset.tab + '-panel').classList.add('active');
         });
-      }
-    }
-  }
-  next();
-}
+    });
 
-// Route lấy key mới (lấy key tiếp theo trong pool)
-app.post('/get-key', 
-  rateLimit({ windowMs: 4 * 60 * 60 * 1000, max: 1 }),
-  checkDeviceHasKey,
-  async (req, res) => {
-    try {
-      const fingerprint = getDeviceFingerprint(req);
-      
-      // Tìm key available tiếp theo
-      const nextKey = await getNextAvailableKey();
-      if (!nextKey) {
-        // Nếu hết key, tạo thêm 50 key mới
-        const counter = await redisClient.get('key:pool:counter');
-        const start = parseInt(counter) + 1;
-        for (let i = start; i < start + 50; i++) {
-          const key = generateKeyFromIndex(i);
-          const keyHash = crypto.createHash('sha256').update(key).digest('hex');
-          await redisClient.setEx(`key:pool:${keyHash}`, 4 * 60 * 60, JSON.stringify({
+    // Product cards -> modal
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const hub = this.dataset.hub;
+            state.currentHub = hub;
+            document.getElementById('modalTitle').textContent = hub === 'GalaxyHub' ? '🌌 GalaxyHub' : 
+                                                               hub === 'LunarHub' ? '🌙 LunarHub' : '💜 NeonHub';
+            document.getElementById('modalContent').innerHTML = `
+                <div class="hub-detail"><span class="icon">🚀</span> ${hub} - Key độc quyền</div>
+                <div class="hub-detail"><span class="icon">🔐</span> Bảo mật cấp cao, 1 key 1 thiết bị</div>
+                <div class="hub-detail"><span class="icon">⏳</span> Hạn sử dụng 4 giờ</div>
+                <div class="hub-detail"><span class="icon">💳</span> Thanh toán qua ZaloPay</div>
+            `;
+            document.getElementById('hubModal').classList.add('active');
+        });
+    });
+
+    // Close modal
+    document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('hubModal').classList.remove('active');
+    });
+    document.getElementById('hubModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+
+    // Modal buy -> chuyển sang deposit
+    document.getElementById('modalBuyBtn').addEventListener('click', function() {
+        document.getElementById('hubModal').classList.remove('active');
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-tab="deposit"]').classList.add('active');
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('deposit-panel').classList.add('active');
+        showToast('Chuyển sang trang nạp tiền, ông chủ.');
+    });
+
+    // Buy key list -> chọn hub rồi chuyển deposit
+    document.querySelectorAll('.hub-item-card').forEach(item => {
+        item.addEventListener('click', function() {
+            const hub = this.dataset.hub;
+            state.currentHub = hub;
+            const amount = hub === 'GalaxyHub' ? 20000 : hub === 'LunarHub' ? 50000 : 100000;
+            state.selectedAmount = amount;
+            showToast(`Đã chọn ${hub} - ${amount.toLocaleString()}đ, chuyển sang nạp tiền.`);
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-tab="deposit"]').classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('deposit-panel').classList.add('active');
+            // Highlight đúng mệnh giá
+            document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelector(`.deposit-btn[data-amount="${amount}"]`)?.classList.add('selected');
+            document.getElementById('bankInfo').classList.add('show');
+        });
+    });
+
+    // Deposit: chọn mệnh giá -> hiện bank info
+    document.querySelectorAll('.deposit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            state.selectedAmount = parseInt(this.dataset.amount);
+            document.getElementById('bankInfo').classList.add('show');
+            showToast('Đã chọn mệnh giá ' + state.selectedAmount.toLocaleString() + 'đ');
+        });
+    });
+
+    // Confirm deposit -> cộng tiền + lịch sử
+    document.getElementById('confirmDeposit').addEventListener('click', function() {
+        if (!state.selectedAmount) {
+            showToast('Vui lòng chọn mệnh giá, ông chủ.');
+            return;
+        }
+        // Cộng tiền vào balance
+        state.balance += state.selectedAmount;
+        updateBalance();
+
+        // Tạo key và lưu lịch sử
+        const key = 'galaxy' + Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 6);
+        const now = new Date();
+        state.history.unshift({
             key: key,
-            index: i,
-            status: 'available',
-            createdAt: Date.now()
-          }));
-        }
-        await redisClient.set('key:pool:counter', start + 50);
-        // Lấy lại key đầu tiên trong pool mới
-        const newKey = await getNextAvailableKey();
-        if (!newKey) {
-          return res.status(500).json({ error: 'Lỗi tạo key, ông chủ.' });
-        }
-        const assigned = await assignKeyToDevice(newKey, fingerprint);
-        return res.json({
-          success: true,
-          key: assigned.key,
-          index: assigned.index,
-          message: 'Key mới được cấp cho thiết bị này, ông chủ.'
+            amount: state.selectedAmount,
+            hub: state.currentHub || 'GalaxyHub',
+            date: now.toLocaleDateString('vi-VN'),
+            time: now.toLocaleTimeString('vi-VN'),
+            timestamp: now.getTime()
         });
-      }
-      
-      // Gán key cho thiết bị
-      const assigned = await assignKeyToDevice(nextKey, fingerprint);
-      res.json({
-        success: true,
-        key: assigned.key,
-        index: assigned.index,
-        message: `Key ${assigned.key} được gán cho thiết bị này, ông chủ.`
-      });
-    } catch (error) {
-      console.error('Lỗi get-key:', error);
-      res.status(500).json({ error: 'Lỗi server, ông chủ.' });
-    }
-});
+        localStorage.setItem('keyHistory', JSON.stringify(state.history));
+        renderHistory();
 
-// Kiểm tra key của thiết bị
-app.get('/my-key', async (req, res) => {
-  const fingerprint = getDeviceFingerprint(req);
-  const key = await redisClient.get(`device:${fingerprint}`);
-  if (!key) {
-    return res.status(404).json({ error: 'Chưa có key, hãy gọi /get-key, ông chủ.' });
-  }
-  res.json({
-    key: key,
-    message: 'Key của thiết bị này, ông chủ. Đúng vậy.'
-  });
-});
+        showToast(`✅ Nạp thành công! Key: ${key}`);
+        state.selectedAmount = 0;
+        document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
+        document.getElementById('bankInfo').classList.remove('show');
+    });
 
-// Admin: xem trạng thái pool
-app.get('/pool-status', async (req, res) => {
-  const keys = await redisClient.keys('key:pool:*');
-  let available = 0, used = 0;
-  for (const k of keys) {
-    const data = await redisClient.get(k);
-    if (data) {
-      const parsed = JSON.parse(data);
-      if (parsed.status === 'available') available++;
-      else used++;
-    }
-  }
-  const counter = await redisClient.get('key:pool:counter') || 0;
-  res.json({
-    totalKeys: keys.length,
-    available,
-    used,
-    nextIndex: parseInt(counter) + 1,
-    message: 'Trạng thái pool key, ông chủ.'
-  });
-});
-
-// Dọn key hết hạn
-setInterval(async () => {
-  try {
-    const keys = await redisClient.keys('key:pool:*');
-    const now = Date.now();
-    for (const key of keys) {
-      const data = await redisClient.get(key);
-      if (data) {
-        const parsed = JSON.parse(data);
-        // Key hết hạn sau 4h kể từ khi được gán
-        if (parsed.assignedAt && (now - parsed.assignedAt > 4 * 60 * 60 * 1000)) {
-          await redisClient.del(key);
-          // Xóa device mapping nếu có
-          if (parsed.assignedTo) {
-            await redisClient.del(`device:${parsed.assignedTo}`);
-          }
-          console.log(`Dọn key ${parsed.key} đã hết hạn.`);
+    // Render history
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        if (state.history.length === 0) {
+            list.innerHTML = '<li class="empty-state">📭 Chưa có giao dịch nào</li>';
+            return;
         }
-      }
+        list.innerHTML = state.history.map(item => `
+            <li>
+                <div>
+                    <span class="key">${item.key}</span>
+                    <span class="hub-tag">${item.hub}</span>
+                </div>
+                <div style="text-align:right;">
+                    <div class="amount">+${item.amount.toLocaleString()}đ</div>
+                    <div class="date">${item.date} ${item.time}</div>
+                </div>
+            </li>
+        `).join('');
     }
-  } catch (err) {
-    console.error('Lỗi dọn dẹp:', err);
-  }
-}, 15 * 60 * 1000);
+    renderHistory();
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Pool key động chạy tại ${PORT}, ông chủ.`);
-  console.log('Key 1 có người lấy -> key 2 cho người tiếp theo. Không ai dùng chung.');
-});
+    // Toast
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+</script>
+</body>
+  </html>
