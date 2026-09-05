@@ -9,19 +9,28 @@
         body { background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; padding: 20px; }
         .container { max-width: 500px; width: 100%; }
         
-        /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #222; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .logo { font-size: 26px; font-weight: 800; background: linear-gradient(90deg, #6c5ce7, #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .balance { background: #1a1a2e; border: 1px solid #333; border-radius: 20px; padding: 6px 16px; font-size: 14px; color: #6c5ce7; font-weight: 600; }
         .balance span { color: #fff; }
         
-        /* Navigation */
+        /* Google Auth Buttons */
+        .auth-btn { background: transparent; border: 1px solid #333; color: #aaa; padding: 6px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .auth-btn:hover { border-color: #6c5ce7; color: #fff; background: #1a1a2e; }
+        .auth-btn.google { background: #fff; color: #222; border: none; font-weight: 500; }
+        .auth-btn.google:hover { background: #e8e8e8; }
+        .auth-btn .avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+        .user-info { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 13px; }
+        .user-info .name { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .logout-btn { background: none; border: none; color: #666; font-size: 12px; cursor: pointer; padding: 2px 8px; }
+        .logout-btn:hover { color: #e74c3c; }
+        
         .nav { display: flex; gap: 8px; background: #12121a; border-radius: 14px; padding: 4px; margin-bottom: 20px; border: 1px solid #222; }
         .nav button { flex: 1; background: transparent; border: none; color: #666; font-size: 13px; font-weight: 500; padding: 10px 0; border-radius: 10px; cursor: pointer; transition: 0.3s; }
         .nav button:hover { color: #aaa; }
         .nav button.active { background: #6c5ce7; color: #fff; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
         
-        /* Panels */
         .panel { display: none; animation: fadeIn 0.3s; }
         .panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -29,23 +38,35 @@
         .panel-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 16px; }
         .panel-title span { color: #6c5ce7; }
         
-        /* Product Grid - Đẹp hơn */
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-        .product-card { background: linear-gradient(145deg, #12121a, #1a1a2e); border: 1px solid #2a2a3e; border-radius: 16px; padding: 24px 12px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
-        .product-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), transparent); opacity: 0; transition: 0.3s; }
-        .product-card:hover::before { opacity: 1; }
-        .product-card:hover { border-color: #6c5ce7; transform: translateY(-4px); box-shadow: 0 8px 30px rgba(108, 92, 231, 0.15); }
-        .product-card .icon { font-size: 36px; margin-bottom: 8px; display: block; }
-        .product-card .name { font-weight: 700; color: #fff; font-size: 16px; }
-        .product-card .sub { font-size: 11px; color: #666; margin-top: 4px; }
-        .product-card .badge { position: absolute; top: 8px; right: 8px; background: #6c5ce7; color: #fff; font-size: 8px; padding: 2px 8px; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
+        .product-grid { display: flex; flex-direction: column; gap: 12px; }
+        .product-row { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(145deg, #12121a, #1a1a2e); border: 1px solid #2a2a3e; border-radius: 14px; padding: 14px 18px; transition: 0.3s; }
+        .product-row:hover { border-color: #6c5ce7; }
+        .product-row .info { display: flex; align-items: center; gap: 14px; }
+        .product-row .info .icon { font-size: 28px; }
+        .product-row .info .name { color: #fff; font-weight: 600; font-size: 16px; }
+        .product-row .info .sub { color: #666; font-size: 12px; }
+        .product-row .badge { font-size: 9px; padding: 2px 10px; border-radius: 10px; font-weight: 700; text-transform: uppercase; margin-left: 8px; }
+        .badge.hot { background: #e74c3c; color: #fff; }
+        .badge.vip { background: #f39c12; color: #fff; }
+        .badge.pro { background: #6c5ce7; color: #fff; }
+        .btn-getkey { background: #6c5ce7; border: none; color: #fff; padding: 8px 20px; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s; }
+        .btn-getkey:hover { background: #5a4bd1; transform: scale(1.05); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
+        .btn-getkey:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         
-        /* Deposit */
+        .hub-list { display: flex; flex-direction: column; gap: 10px; }
+        .hub-item-card { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .hub-item-card:hover { border-color: #6c5ce7; background: #1a1a2e; }
+        .hub-item-card .left { display: flex; align-items: center; gap: 12px; }
+        .hub-item-card .left .icon { font-size: 24px; }
+        .hub-item-card .left .name { color: #fff; font-weight: 600; }
+        .hub-item-card .arrow { color: #444; font-size: 20px; }
+        
         .deposit-grid { display: flex; flex-direction: column; gap: 16px; }
         .deposit-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
         .deposit-btn { background: #1a1a2e; border: 2px solid #2a2a3e; border-radius: 12px; padding: 14px 28px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; min-width: 90px; }
         .deposit-btn:hover { border-color: #6c5ce7; background: #22223a; }
         .deposit-btn.selected { border-color: #6c5ce7; background: #2a2a4a; box-shadow: 0 0 20px rgba(108, 92, 231, 0.2); }
+        .deposit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         
         .bank-info { background: #0d0d14; border-radius: 12px; padding: 16px; border-left: 3px solid #6c5ce7; display: none; animation: fadeIn 0.3s; }
         .bank-info.show { display: block; }
@@ -56,19 +77,20 @@
         
         .btn-primary { background: linear-gradient(90deg, #6c5ce7, #a29bfe); border: none; color: #fff; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 12px; }
         .btn-primary:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         
-        /* Hub list for Buy Key */
-        .hub-list { display: flex; flex-direction: column; gap: 10px; }
-        .hub-item-card { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .hub-item-card:hover { border-color: #6c5ce7; background: #1a1a2e; }
-        .hub-item-card .left { display: flex; align-items: center; gap: 12px; }
-        .hub-item-card .left .icon { font-size: 24px; }
-        .hub-item-card .left .name { color: #fff; font-weight: 600; }
-        .hub-item-card .left .price { color: #6c5ce7; font-size: 13px; }
-        .hub-item-card .arrow { color: #444; font-size: 20px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #12121a; border: 1px solid #333; border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; animation: fadeIn 0.3s; text-align: center; }
+        .modal-box .close { float: right; background: none; border: none; color: #666; font-size: 28px; cursor: pointer; transition: 0.3s; }
+        .modal-box .close:hover { color: #fff; }
+        .modal-box .modal-icon { font-size: 48px; margin: 10px 0; }
+        .modal-box h2 { color: #fff; font-size: 22px; margin-bottom: 8px; }
+        .modal-box .modal-sub { color: #888; font-size: 14px; margin-bottom: 20px; }
+        .modal-box .key-display { background: #0a0a0f; border: 1px dashed #6c5ce7; border-radius: 12px; padding: 16px; font-size: 24px; font-weight: 700; color: #6c5ce7; letter-spacing: 2px; margin: 16px 0; font-family: monospace; }
+        .modal-box .btn-pay { background: linear-gradient(90deg, #00b894, #00cec9); border: none; color: #fff; padding: 14px 40px; border-radius: 12px; font-weight: 700; font-size: 18px; cursor: pointer; transition: 0.3s; width: 100%; }
+        .modal-box .btn-pay:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(0, 206, 201, 0.3); }
         
-        /* History */
         .history-list { list-style: none; max-height: 400px; overflow-y: auto; }
         .history-list::-webkit-scrollbar { width: 4px; }
         .history-list::-webkit-scrollbar-thumb { background: #6c5ce7; border-radius: 10px; }
@@ -79,22 +101,11 @@
         .history-list .date { color: #555; font-size: 12px; }
         .empty-state { text-align: center; color: #444; padding: 40px 0; font-size: 14px; }
         
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
-        .modal-overlay.active { display: flex; }
-        .modal-box { background: #12121a; border: 1px solid #333; border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; animation: fadeIn 0.3s; }
-        .modal-box .close { float: right; background: none; border: none; color: #666; font-size: 28px; cursor: pointer; transition: 0.3s; }
-        .modal-box .close:hover { color: #fff; }
-        .modal-box h2 { color: #fff; font-size: 22px; margin-bottom: 16px; }
-        .modal-box .hub-detail { padding: 10px 0; border-bottom: 1px solid #1a1a2e; color: #aaa; display: flex; align-items: center; gap: 12px; }
-        .modal-box .hub-detail:last-child { border: none; }
-        .modal-box .hub-detail .icon { font-size: 20px; }
-        
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a1a2e; border: 1px solid #6c5ce7; padding: 14px 28px; border-radius: 12px; color: #fff; display: none; z-index: 2000; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
         .toast.show { display: block; animation: fadeInUp 0.3s; }
         @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
         
-        @media (max-width: 450px) { .product-grid { grid-template-columns: 1fr 1fr; } .deposit-btn { min-width: 70px; padding: 12px 16px; font-size: 14px; } }
+        @media (max-width: 450px) { .deposit-btn { min-width: 70px; padding: 12px 16px; font-size: 14px; } .product-row { flex-wrap: wrap; gap: 10px; } .header { flex-direction: column; align-items: stretch; } .header-right { justify-content: space-between; } }
     </style>
 </head>
 <body>
@@ -102,7 +113,16 @@
     <!-- Header -->
     <div class="header">
         <div class="logo">✦ KeyHub</div>
-        <div class="balance">💰 <span id="balanceDisplay">0</span>đ</div>
+        <div class="header-right">
+            <div class="balance">💰 <span id="balanceDisplay">0</span>đ</div>
+            <!-- Auth -->
+            <div id="authContainer">
+                <button class="auth-btn google" id="googleLoginBtn">
+                    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+                    Đăng nhập Google
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Navigation -->
@@ -117,23 +137,26 @@
     <div id="products-panel" class="panel active">
         <div class="panel-title">🔥 <span>Sản phẩm</span> nổi bật</div>
         <div class="product-grid">
-            <div class="product-card" data-hub="GalaxyHub">
-                <span class="badge">Hot</span>
-                <span class="icon">🌌</span>
-                <div class="name">GalaxyHub</div>
-                <div class="sub">Key Premium</div>
+            <div class="product-row">
+                <div class="info">
+                    <span class="icon">🌌</span>
+                    <div><div class="name">GalaxyHub <span class="badge hot">Hot</span></div><div class="sub">Key Premium</div></div>
+                </div>
+                <button class="btn-getkey" data-hub="GalaxyHub">Lấy Key</button>
             </div>
-            <div class="product-card" data-hub="LunarHub">
-                <span class="badge">VIP</span>
-                <span class="icon">🌙</span>
-                <div class="name">LunarHub</div>
-                <div class="sub">Key VIP</div>
+            <div class="product-row">
+                <div class="info">
+                    <span class="icon">🌙</span>
+                    <div><div class="name">LunarHub <span class="badge vip">VIP</span></div><div class="sub">Key VIP</div></div>
+                </div>
+                <button class="btn-getkey" data-hub="LunarHub">Lấy Key</button>
             </div>
-            <div class="product-card" data-hub="NeonHub">
-                <span class="badge">Pro</span>
-                <span class="icon">💜</span>
-                <div class="name">NeonHub</div>
-                <div class="sub">Key Pro</div>
+            <div class="product-row">
+                <div class="info">
+                    <span class="icon">💜</span>
+                    <div><div class="name">NeonHub <span class="badge pro">Pro</span></div><div class="sub">Key Pro</div></div>
+                </div>
+                <button class="btn-getkey" data-hub="NeonHub">Lấy Key</button>
             </div>
         </div>
     </div>
@@ -143,15 +166,15 @@
         <div class="panel-title">🛒 <span>Mua key</span> - chọn hub</div>
         <div class="hub-list">
             <div class="hub-item-card" data-hub="GalaxyHub">
-                <div class="left"><span class="icon">🌌</span><span class="name">GalaxyHub</span><span class="price">• 20.000đ</span></div>
+                <div class="left"><span class="icon">🌌</span><span class="name">GalaxyHub</span></div>
                 <span class="arrow">→</span>
             </div>
             <div class="hub-item-card" data-hub="LunarHub">
-                <div class="left"><span class="icon">🌙</span><span class="name">LunarHub</span><span class="price">• 50.000đ</span></div>
+                <div class="left"><span class="icon">🌙</span><span class="name">LunarHub</span></div>
                 <span class="arrow">→</span>
             </div>
             <div class="hub-item-card" data-hub="NeonHub">
-                <div class="left"><span class="icon">💜</span><span class="name">NeonHub</span><span class="price">• 100.000đ</span></div>
+                <div class="left"><span class="icon">💜</span><span class="name">NeonHub</span></div>
                 <span class="arrow">→</span>
             </div>
         </div>
@@ -185,173 +208,103 @@
     </div>
 </div>
 
-<!-- Modal sản phẩm -->
-<div class="modal-overlay" id="hubModal">
+<!-- Payment Modal -->
+<div class="modal-overlay" id="paymentModal">
     <div class="modal-box">
-        <button class="close" id="closeModal">&times;</button>
-        <h2 id="modalTitle">🌌 GalaxyHub</h2>
-        <div id="modalContent">
-            <div class="hub-detail"><span class="icon">🚀</span> Key độc quyền, bảo mật cao</div>
-            <div class="hub-detail"><span class="icon">🔐</span> Không chia sẻ, 1 key 1 thiết bị</div>
-            <div class="hub-detail"><span class="icon">⏳</span> Hạn sử dụng 4 giờ</div>
-            <div class="hub-detail"><span class="icon">💳</span> Thanh toán qua ZaloPay</div>
-        </div>
-        <button class="btn-primary" id="modalBuyBtn">Mua key ngay</button>
+        <button class="close" id="closePaymentModal">&times;</button>
+        <div class="modal-icon">💳</div>
+        <h2 id="payModalTitle">Xác nhận thanh toán</h2>
+        <div class="modal-sub" id="payModalSub">Bạn đang mua GalaxyHub</div>
+        <div class="key-display" id="generatedKey">galaxy836</div>
+        <button class="btn-pay" id="confirmPayment">✅ Thanh toán ngay</button>
     </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-    const state = {
-        balance: parseInt(localStorage.getItem('keyBalance')) || 0,
-        history: JSON.parse(localStorage.getItem('keyHistory')) || [],
-        currentHub: 'GalaxyHub',
-        selectedAmount: 0
+    // ===== AUTH STATE =====
+    const auth = {
+        user: null, // { name, email, picture }
+        isLoggedIn: false
     };
 
-    // Update balance display
-    function updateBalance() {
-        document.getElementById('balanceDisplay').textContent = state.balance.toLocaleString();
-        localStorage.setItem('keyBalance', state.balance);
+    // Load từ localStorage
+    function loadAuth() {
+        const saved = localStorage.getItem('authUser');
+        if (saved) {
+            try {
+                auth.user = JSON.parse(saved);
+                auth.isLoggedIn = true;
+            } catch(e) { auth.user = null; auth.isLoggedIn = false; }
+        }
+        updateAuthUI();
     }
-    updateBalance();
+    loadAuth();
 
-    // Tab switching
-    document.querySelectorAll('.nav button').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(this.dataset.tab + '-panel').classList.add('active');
-        });
-    });
+    function saveAuth() {
+        if (auth.user) {
+            localStorage.setItem('authUser', JSON.stringify(auth.user));
+        } else {
+            localStorage.removeItem('authUser');
+        }
+    }
 
-    // Product cards -> modal
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const hub = this.dataset.hub;
-            state.currentHub = hub;
-            document.getElementById('modalTitle').textContent = hub === 'GalaxyHub' ? '🌌 GalaxyHub' : 
-                                                               hub === 'LunarHub' ? '🌙 LunarHub' : '💜 NeonHub';
-            document.getElementById('modalContent').innerHTML = `
-                <div class="hub-detail"><span class="icon">🚀</span> ${hub} - Key độc quyền</div>
-                <div class="hub-detail"><span class="icon">🔐</span> Bảo mật cấp cao, 1 key 1 thiết bị</div>
-                <div class="hub-detail"><span class="icon">⏳</span> Hạn sử dụng 4 giờ</div>
-                <div class="hub-detail"><span class="icon">💳</span> Thanh toán qua ZaloPay</div>
+    function updateAuthUI() {
+        const container = document.getElementById('authContainer');
+        if (auth.isLoggedIn && auth.user) {
+            container.innerHTML = `
+                <div class="user-info">
+                    <img class="avatar" src="${auth.user.picture || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(auth.user.name)}" alt="avatar">
+                    <span class="name">${auth.user.name}</span>
+                    <button class="logout-btn" id="logoutBtn">✕</button>
+                </div>
             `;
-            document.getElementById('hubModal').classList.add('active');
-        });
-    });
-
-    // Close modal
-    document.getElementById('closeModal').addEventListener('click', () => {
-        document.getElementById('hubModal').classList.remove('active');
-    });
-    document.getElementById('hubModal').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('active');
-    });
-
-    // Modal buy -> chuyển sang deposit
-    document.getElementById('modalBuyBtn').addEventListener('click', function() {
-        document.getElementById('hubModal').classList.remove('active');
-        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-        document.querySelector('[data-tab="deposit"]').classList.add('active');
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('deposit-panel').classList.add('active');
-        showToast('Chuyển sang trang nạp tiền, ông chủ.');
-    });
-
-    // Buy key list -> chọn hub rồi chuyển deposit
-    document.querySelectorAll('.hub-item-card').forEach(item => {
-        item.addEventListener('click', function() {
-            const hub = this.dataset.hub;
-            state.currentHub = hub;
-            const amount = hub === 'GalaxyHub' ? 20000 : hub === 'LunarHub' ? 50000 : 100000;
-            state.selectedAmount = amount;
-            showToast(`Đã chọn ${hub} - ${amount.toLocaleString()}đ, chuyển sang nạp tiền.`);
-            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-            document.querySelector('[data-tab="deposit"]').classList.add('active');
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('deposit-panel').classList.add('active');
-            // Highlight đúng mệnh giá
-            document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
-            document.querySelector(`.deposit-btn[data-amount="${amount}"]`)?.classList.add('selected');
-            document.getElementById('bankInfo').classList.add('show');
-        });
-    });
-
-    // Deposit: chọn mệnh giá -> hiện bank info
-    document.querySelectorAll('.deposit-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
-            this.classList.add('selected');
-            state.selectedAmount = parseInt(this.dataset.amount);
-            document.getElementById('bankInfo').classList.add('show');
-            showToast('Đã chọn mệnh giá ' + state.selectedAmount.toLocaleString() + 'đ');
-        });
-    });
-
-    // Confirm deposit -> cộng tiền + lịch sử
-    document.getElementById('confirmDeposit').addEventListener('click', function() {
-        if (!state.selectedAmount) {
-            showToast('Vui lòng chọn mệnh giá, ông chủ.');
-            return;
+            document.getElementById('logoutBtn')?.addEventListener('click', () => {
+                auth.user = null;
+                auth.isLoggedIn = false;
+                saveAuth();
+                updateAuthUI();
+                showToast('Đã đăng xuất, ông chủ.');
+                // Disable các nút yêu cầu đăng nhập
+                toggleButtons();
+            });
+        } else {
+            container.innerHTML = `
+                <button class="auth-btn google" id="googleLoginBtn">
+                    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+                    Đăng nhập Google
+                </button>
+            `;
+            document.getElementById('googleLoginBtn')?.addEventListener('click', googleLogin);
         }
-        // Cộng tiền vào balance
-        state.balance += state.selectedAmount;
-        updateBalance();
-
-        // Tạo key và lưu lịch sử
-        const key = 'galaxy' + Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 6);
-        const now = new Date();
-        state.history.unshift({
-            key: key,
-            amount: state.selectedAmount,
-            hub: state.currentHub || 'GalaxyHub',
-            date: now.toLocaleDateString('vi-VN'),
-            time: now.toLocaleTimeString('vi-VN'),
-            timestamp: now.getTime()
-        });
-        localStorage.setItem('keyHistory', JSON.stringify(state.history));
-        renderHistory();
-
-        showToast(`✅ Nạp thành công! Key: ${key}`);
-        state.selectedAmount = 0;
-        document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
-        document.getElementById('bankInfo').classList.remove('show');
-    });
-
-    // Render history
-    function renderHistory() {
-        const list = document.getElementById('historyList');
-        if (state.history.length === 0) {
-            list.innerHTML = '<li class="empty-state">📭 Chưa có giao dịch nào</li>';
-            return;
-        }
-        list.innerHTML = state.history.map(item => `
-            <li>
-                <div>
-                    <span class="key">${item.key}</span>
-                    <span class="hub-tag">${item.hub}</span>
-                </div>
-                <div style="text-align:right;">
-                    <div class="amount">+${item.amount.toLocaleString()}đ</div>
-                    <div class="date">${item.date} ${item.time}</div>
-                </div>
-            </li>
-        `).join('');
+        toggleButtons();
     }
-    renderHistory();
 
-    // Toast
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        clearTimeout(t._timeout);
-        t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
+    // Google Login mock (simulate OAuth)
+    function googleLogin() {
+        // Mô phỏng đăng nhập Google (dùng mock data)
+        const mockUsers = [
+            { name: 'Nguyễn Văn A', email: 'vana@gmail.com', picture: 'https://ui-avatars.com/api/?name=Nguyen+Van+A&background=6c5ce7&color=fff' },
+            { name: 'Trần Thị B', email: 'thib@gmail.com', picture: 'https://ui-avatars.com/api/?name=Tran+Thi+B&background=6c5ce7&color=fff' },
+            { name: 'Lê Văn C', email: 'vanc@gmail.com', picture: 'https://ui-avatars.com/api/?name=Le+Van+C&background=6c5ce7&color=fff' }
+        ];
+        // Random 1 user để demo
+        const user = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+        auth.user = user;
+        auth.isLoggedIn = true;
+        saveAuth();
+        updateAuthUI();
+        showToast(`👋 Chào ${user.name}, đăng nhập thành công!`);
     }
-</script>
-</body>
-  </html>
+
+    // Toggle buttons based on auth
+    function toggleButtons() {
+        const loggedIn = auth.isLoggedIn;
+        document.querySelectorAll('.btn-getkey, .hub-item-card, .deposit-btn, #confirmDeposit, .btn-pay, #confirmPayment').forEach(el => {
+            if (el.tagName === 'BUTTON' || el.classList.contains('hub-item-card')) {
+                if (!loggedIn && el.closest('.product-grid') || el.closest('.hub-list') || el.id === 'confirmDeposit' || el.id === 'confirmPayment' || el.classList.contains('deposit-btn')) {
+                    el.disabled = !loggedIn;
+                    if (el.tagName === 'BUTTON' && !loggedIn) {
+                        el.title = 'Vui lòng đăng nhập';
+       
