@@ -1,10 +1,10 @@
-<!-- getkey_full_website.html -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GET KEY - Nền tảng lấy key miễn phí</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         * {
             margin: 0;
@@ -13,303 +13,516 @@
         }
 
         body {
-            background: #0b0e1a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e0e0e0;
+            background: #0b0b12;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #e8e8f0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             padding: 20px;
         }
 
-        .container {
-            max-width: 1100px;
+        .app {
+            max-width: 1200px;
             width: 100%;
-            background: #12162b;
-            border-radius: 32px;
-            padding: 40px 48px 48px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #11111a;
+            border-radius: 28px;
+            padding: 28px 32px 40px;
+            border: 1px solid #252535;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ===== HEADER / NAV ===== */
-        .nav {
+        .app::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(100, 80, 255, 0.04), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #1e1e2e;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
             gap: 28px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #8a8fa8;
-            border-bottom: 1px solid #1e2340;
-            padding-bottom: 16px;
-            margin-bottom: 32px;
             flex-wrap: wrap;
         }
 
-        .nav .logo {
-            color: #ffffff;
-            font-weight: 700;
-            margin-right: 12px;
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
         }
 
-        .nav a {
-            color: #8a8fa8;
+        .logo span {
+            background: linear-gradient(135deg, #8b7aff, #5a4bd1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #8a8aa2;
             text-decoration: none;
-            transition: 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
             letter-spacing: 0.3px;
         }
 
-        .nav a:hover {
-            color: #7a8eff;
+        .nav-links a:hover {
+            color: #c8c8e8;
         }
 
-        .nav a.active {
-            color: #7a8eff;
+        .nav-links a.active {
+            color: #8b7aff;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-right .user-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #1e1e2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8a8aa2;
+            border: 1px solid #2a2a3e;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-right .user-icon:hover {
+            border-color: #8b7aff;
+            color: #fff;
         }
 
         /* ===== HERO ===== */
         .hero {
-            margin-bottom: 28px;
+            margin-top: 32px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            background: rgba(100, 80, 255, 0.12);
+            border: 1px solid rgba(100, 80, 255, 0.2);
+            padding: 4px 18px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #8b7aff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
         }
 
         .hero h1 {
-            font-size: 44px;
+            font-size: 48px;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 30%, #7a8eff 100%);
+            color: #ffffff;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #8b7aff, #6c5ce7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
         }
 
         .hero .sub {
-            color: #b0b8d0;
             font-size: 18px;
-            font-weight: 500;
+            font-weight: 600;
+            color: #b0b0c8;
             margin-top: 4px;
-            margin-bottom: 10px;
+            letter-spacing: 0.3px;
         }
 
         .hero .desc {
-            color: #8a8fa8;
-            font-size: 16px;
-            max-width: 700px;
+            max-width: 580px;
+            margin: 10px auto 0;
+            font-size: 15px;
+            color: #7a7a92;
             line-height: 1.6;
         }
 
-        /* ===== BUTTONS ===== */
-        .action-row {
+        .hero-actions {
             display: flex;
+            justify-content: center;
             gap: 16px;
-            margin: 24px 0 36px;
+            margin-top: 24px;
             flex-wrap: wrap;
         }
 
-        .btn {
-            padding: 12px 36px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 15px;
-            border: none;
-            cursor: pointer;
-            transition: 0.15s;
-            letter-spacing: 0.4px;
-        }
-
         .btn-primary {
-            background: linear-gradient(135deg, #5b6eff, #7a3cf0);
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #7c6af0, #5a4bd1);
+            border: none;
+            border-radius: 12px;
             color: #fff;
-            box-shadow: 0 6px 20px rgba(91, 110, 255, 0.25);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px rgba(90, 75, 209, 0.35);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .btn-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 30px rgba(91, 110, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(90, 75, 209, 0.5);
+            background: linear-gradient(135deg, #8b7aff, #6c5ce7);
         }
 
         .btn-secondary {
+            padding: 14px 36px;
             background: transparent;
-            color: #b0b8d0;
-            border: 2px solid #2a2f50;
+            border: 1.5px solid #3a3a4e;
+            border-radius: 12px;
+            color: #c8c8e0;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: #5b6eff;
+            border-color: #8b7aff;
             color: #fff;
+            background: rgba(124, 106, 240, 0.06);
         }
 
         /* ===== PRODUCTS ===== */
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #e8ecf8;
+        .products {
+            margin-top: 44px;
+            padding-top: 28px;
+            border-top: 1px solid #1e1e2e;
+            position: relative;
+            z-index: 2;
+        }
+
+        .products .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #6a6a82;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 6px;
         }
 
-        .section-sub {
-            color: #8a8fa8;
-            font-size: 15px;
-            margin-bottom: 24px;
+        .products .section-sub {
+            font-size: 14px;
+            color: #7a7a92;
+            margin-bottom: 20px;
         }
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
         }
 
         .product-card {
-            background: #0e1327;
-            border-radius: 24px;
-            padding: 28px 24px 24px;
-            border: 1px solid #1e2340;
-            transition: 0.2s;
+            background: #16161f;
+            border-radius: 16px;
+            padding: 20px 22px;
+            border: 1px solid #222232;
+            transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
         }
 
         .product-card:hover {
-            border-color: #5b6eff;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: #3a3a5a;
+            background: #1a1a26;
+            transform: translateY(-2px);
         }
 
         .product-card .name {
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-card .name i {
+            color: #8b7aff;
+            font-size: 20px;
         }
 
         .product-card .desc {
-            color: #9aa0b8;
-            font-size: 15px;
+            font-size: 14px;
+            color: #7a7a92;
+            margin-top: 4px;
             line-height: 1.5;
             flex: 1;
-            margin-bottom: 18px;
         }
 
-        .product-card .btn-key {
-            background: #1e2340;
-            border: 1px solid #2e3460;
-            color: #bcc4ee;
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-weight: 700;
+        .product-card .btn-get {
+            margin-top: 16px;
+            padding: 10px 0;
+            background: #2a2a3e;
+            border: none;
+            border-radius: 10px;
+            color: #c8c8e8;
             font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.15s;
-            align-self: flex-start;
-            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            width: 100%;
         }
 
-        .product-card .btn-key:hover {
-            background: #2a2f5a;
-            border-color: #5b6eff;
-            color: #ffffff;
+        .product-card .btn-get:hover {
+            background: #3a3a5a;
+            color: #fff;
+        }
+
+        .product-card .btn-get.active {
+            background: linear-gradient(135deg, #7c6af0, #5a4bd1);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(90, 75, 209, 0.3);
+        }
+
+        .product-card .btn-get.active:hover {
+            background: linear-gradient(135deg, #8b7aff, #6c5ce7);
+            transform: scale(1.02);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-note {
+            margin-top: 36px;
+            text-align: center;
+            font-size: 13px;
+            color: #4a4a5e;
+            border-top: 1px solid #1a1a28;
+            padding-top: 20px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 0.3px;
+        }
+
+        .footer-note i {
+            margin-right: 6px;
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 720px) {
-            .container {
-                padding: 24px 20px;
+        @media (max-width: 768px) {
+            .app {
+                padding: 18px 16px 30px;
+            }
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .nav-left {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .nav-right {
+                justify-content: center;
             }
             .hero h1 {
                 font-size: 32px;
             }
-            .nav {
-                gap: 16px;
-                font-size: 13px;
+            .hero .sub {
+                font-size: 16px;
+            }
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
             }
             .product-grid {
                 grid-template-columns: 1fr;
             }
-            .action-row {
-                flex-direction: column;
-                align-items: flex-start;
+        }
+
+        @media (max-width: 420px) {
+            .hero h1 {
+                font-size: 26px;
             }
-            .btn {
-                width: 100%;
-                text-align: center;
+            .nav-links a {
+                font-size: 12px;
+            }
+            .logo {
+                font-size: 18px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- ===== NAV ===== -->
-        <div class="nav">
-            <span class="logo">GET KEY</span>
-            <a href="#">TRANG CHỦ</a>
-            <a href="#" class="active">SẢN PHẨM</a>
-            <a href="#">HƯỚNG DẪN</a>
-            <a href="#">NAP TIỀN</a>
-            <a href="#">LỊCH SỬ</a>
-            <a href="#">HỖ TRỢ</a>
-        </div>
 
-        <!-- ===== HERO ===== -->
-        <div class="hero">
-            <h1>GET KEY</h1>
-            <div class="sub">NỀN TẢNG LẤY KEY MIỄN PHÍ</div>
-            <div class="desc">
-                Hệ thống lấy key tự động nhanh chóng, an toàn và hoàn toàn miễn phí cho mọi người.
+<div class="app">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">GET <span>KEY</span></div>
+            <div class="nav-links">
+                <a href="#" class="active">TRANG CHỦ</a>
+                <a href="#">SẢN PHẨM</a>
+                <a href="#">HƯỚNG DẪN</a>
+                <a href="#">NAP TIỀN</a>
+                <a href="#">LỊCH SỬ</a>
+                <a href="#">HỖ TRỢ</a>
             </div>
         </div>
-
-        <!-- ===== ACTION BUTTONS ===== -->
-        <div class="action-row">
-            <button class="btn btn-primary">LẤY KEY NGAY</button>
-            <button class="btn btn-secondary">HƯỚNG DẪN</button>
+        <div class="nav-right">
+            <div class="user-icon"><i class="fas fa-user"></i></div>
         </div>
+    </nav>
 
-        <!-- ===== PRODUCTS ===== -->
-        <div class="section-title">SẢN PHẨM NỔI BẬT</div>
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="badge">⚡ MIỄN PHÍ 100%</div>
+        <h1>GET <span>KEY</span></h1>
+        <div class="sub">NỀN TẢNG LẤY KEY MIỄN PHÍ</div>
+        <p class="desc">
+            Hệ thống lấy key tự động nhanh chóng, an toàn và hoàn toàn miễn phí cho mọi người.
+        </p>
+        <div class="hero-actions">
+            <a href="#" class="btn-primary" id="getKeyNow">
+                <i class="fas fa-key"></i> LẤY KEY NGAY
+            </a>
+            <a href="#" class="btn-secondary">
+                <i class="fas fa-book-open"></i> HƯỚNG DẪN
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== PRODUCTS ===== -->
+    <section class="products">
+        <div class="section-title"><i class="fas fa-crown" style="margin-right: 8px;"></i> SẢN PHẨM NỔI BẬT</div>
         <div class="section-sub">Chọn sản phẩm bạn muốn lấy key</div>
 
         <div class="product-grid">
             <!-- GalaxyHub -->
             <div class="product-card">
-                <div class="name">GalaxyHub</div>
+                <div class="name"><i class="fas fa-galaxy"></i> GalaxyHub</div>
                 <div class="desc">Nền tảng hỗ trợ game &amp; tiện ích mạnh mẽ, tối ưu trải nghiệm.</div>
-                <button class="btn-key">LẤY KEY</button>
+                <button class="btn-get active" data-product="galaxy">LẤY KEY</button>
             </div>
 
             <!-- LunarHub -->
             <div class="product-card">
-                <div class="name">LunarHub</div>
+                <div class="name"><i class="fas fa-moon"></i> LunarHub</div>
                 <div class="desc">Giải pháp toàn diện cho game thủ và người dùng công nghệ.</div>
-                <button class="btn-key">LẤY KEY</button>
+                <button class="btn-get" data-product="lunar">LẤY KEY</button>
             </div>
 
             <!-- NeonHub -->
             <div class="product-card">
-                <div class="name">NeonHub</div>
+                <div class="name"><i class="fas fa-bolt"></i> NeonHub</div>
                 <div class="desc">Công cụ hiện đại, tốc độ cao, bảo mật và dễ sử dụng.</div>
-                <button class="btn-key">LẤY KEY</button>
+                <button class="btn-get" data-product="neon">LẤY KEY</button>
             </div>
         </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer-note">
+        <i class="fas fa-shield-alt"></i> Bảo mật tuyệt đối · Mỗi key chỉ 1 thiết bị · 4h làm mới
     </div>
 
-    <!-- ===== JavaScript (xử lý nút) ===== -->
-    <script>
-        document.querySelectorAll('.btn-key').forEach(btn => {
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const getKeyBtn = document.getElementById('getKeyNow');
+        const productBtns = document.querySelectorAll('.btn-get');
+
+        // Hàm gọi API lấy key
+        async function fetchKey(product = 'galaxy') {
+            try {
+                const response = await fetch('/get-key', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ product })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('🎉 Key của bạn: ' + data.key + '\nSản phẩm: ' + product.toUpperCase() + '\nKey đã gán cho thiết bị này, ông chủ.');
+                } else {
+                    alert('❌ ' + (data.error || 'Không thể lấy key, thử lại sau.'));
+                }
+            } catch (err) {
+                alert('❌ Lỗi kết nối server, ông chủ.');
+                console.error(err);
+            }
+        }
+
+        // Nút LẤY KEY NGAY (hero)
+        getKeyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetchKey('galaxy');
+        });
+
+        // Các nút LẤY KEY trong sản phẩm
+        productBtns.forEach(btn => {
             btn.addEventListener('click', function(e) {
-                const card = this.closest('.product-card');
-                const name = card.querySelector('.name').textContent;
-                alert(`🔑 Đang xử lý lấy key cho ${name}...\nVui lòng đợi, ông chủ.`);
-                // Có thể thay bằng API call tới backend key pool
+                e.preventDefault();
+                const product = this.getAttribute('data-product') || 'galaxy';
+                fetchKey(product);
             });
         });
 
-        document.querySelector('.btn-primary').addEventListener('click', function() {
-            alert('🚀 Chuyển đến trang lấy key ngay, ông chủ.');
-        });
+    });
+</script>
 
-        document.querySelector('.btn-secondary').addEventListener('click', function() {
-            alert('📖 Hướng dẫn sử dụng key, ông chủ.');
-        });
-    </script>
 </body>
-</html>
+    </html>
