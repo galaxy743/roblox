@@ -1,412 +1,253 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GET KEY</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key System</title>
     <style>
-        /* Reset hoàn toàn */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #0e0e16;
-            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            background: #13131e;
-            border-radius: 20px;
-            padding: 30px 28px 36px;
-            max-width: 500px;
-            width: 100%;
-            border: 1px solid #252535;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
-        }
-
-        /* === NAVBAR === */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #1f1f2f;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.3px;
-        }
-
-        .logo span {
-            color: #7a6ae8;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 10px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #8888a0;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .nav-links span {
-            cursor: default;
-        }
-
-        .nav-links .active {
-            color: #7a6ae8;
-        }
-
-        /* === HEADER === */
-        .header {
-            text-align: center;
-            margin-bottom: 18px;
-        }
-
-        .header h1 {
-            font-size: 34px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.5px;
-        }
-
-        .header h1 span {
-            color: #7a6ae8;
-        }
-
-        .header .sub {
-            font-size: 16px;
-            font-weight: 600;
-            color: #b8b8d0;
-            margin-top: 2px;
-        }
-
-        .header .desc {
-            font-size: 13px;
-            color: #6a6a82;
-            margin-top: 8px;
-            line-height: 1.5;
-            max-width: 380px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* === DIVIDER === */
-        .divider {
-            border: none;
-            border-top: 1px solid #1f1f2f;
-            margin: 16px 0 14px 0;
-        }
-
-        /* === ACTION ROW === */
-        .action-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 6px;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            flex: 1;
-            padding: 12px 0;
-            background: #6c5ce7;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            transition: 0.2s;
-            min-width: 120px;
-        }
-
-        .btn-primary:hover {
-            background: #7a6ae8;
-        }
-
-        .btn-outline {
-            flex: 1;
-            padding: 12px 0;
-            background: transparent;
-            border: 1.5px solid #33334a;
-            border-radius: 10px;
-            color: #b0b0c8;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: 0.2s;
-            min-width: 120px;
-        }
-
-        .btn-outline:hover {
-            border-color: #6c5ce7;
-            color: #fff;
-        }
-
-        /* === PRODUCT SECTION === */
-        .section-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #6a6a82;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 14px;
-            margin-bottom: 4px;
-        }
-
-        .section-sub {
-            font-size: 13px;
-            color: #6a6a82;
-            margin-bottom: 14px;
-        }
-
-        .product-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .product-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #181825;
-            padding: 14px 18px;
-            border-radius: 12px;
-            border: 1px solid #222236;
-            transition: 0.2s;
-        }
-
-        .product-item:hover {
-            border-color: #3a3a5a;
-        }
-
-        .product-info .name {
-            font-size: 17px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .product-info .name i {
-            color: #7a6ae8;
-            margin-right: 8px;
-        }
-
-        .product-info .desc {
-            font-size: 13px;
-            color: #6a6a82;
-            margin-top: 2px;
-        }
-
-        .btn-get {
-            padding: 8px 20px;
-            background: #2a2a42;
-            border: none;
-            border-radius: 8px;
-            color: #c0c0d8;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-
-        .btn-get:hover {
-            background: #3a3a5a;
-            color: #fff;
-        }
-
-        .btn-get.active {
-            background: #6c5ce7;
-            color: #fff;
-        }
-
-        .btn-get.active:hover {
-            background: #7a6ae8;
-        }
-
-        /* === FOOTER === */
-        .footer {
-            margin-top: 22px;
-            padding-top: 14px;
-            border-top: 1px solid #1f1f2f;
-            text-align: center;
-            font-size: 12px;
-            color: #4a4a62;
-        }
-
-        .footer i {
-            margin: 0 4px;
-        }
-
-        /* === RESPONSIVE === */
-        @media (max-width: 460px) {
-            .container {
-                padding: 18px 14px 24px;
-            }
-            .navbar {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-            }
-            .nav-links {
-                justify-content: center;
-                font-size: 11px;
-                gap: 8px;
-            }
-            .header h1 {
-                font-size: 28px;
-            }
-            .action-row {
-                flex-direction: column;
-            }
-            .product-item {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-            }
-            .btn-get {
-                width: 100%;
-                text-align: center;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #0a0a0f; color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; padding: 20px; }
+        .container { max-width: 600px; width: 100%; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #222; margin-bottom: 20px; }
+        .logo { font-size: 24px; font-weight: 700; color: #fff; }
+        .logo span { color: #6c5ce7; }
+        .nav { display: flex; gap: 16px; flex-wrap: wrap; }
+        .nav button { background: transparent; border: none; color: #888; font-size: 14px; cursor: pointer; padding: 6px 12px; transition: 0.2s; }
+        .nav button:hover, .nav button.active { color: #fff; background: #1a1a2e; border-radius: 8px; }
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .product-card { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 20px 12px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .product-card:hover { border-color: #6c5ce7; background: #1a1a2e; }
+        .product-card .icon { font-size: 32px; margin-bottom: 8px; }
+        .product-card .name { font-weight: 600; color: #fff; }
+        .product-card .sub { font-size: 12px; color: #666; margin-top: 4px; }
+        .panel { background: #12121a; border: 1px solid #222; border-radius: 12px; padding: 20px; margin: 16px 0; display: none; }
+        .panel.active { display: block; }
+        .panel h3 { margin-bottom: 16px; color: #fff; font-weight: 400; }
+        .deposit-grid { display: flex; flex-direction: column; gap: 12px; }
+        .deposit-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .deposit-btn { background: #1a1a2e; border: 1px solid #333; border-radius: 8px; padding: 12px 24px; color: #fff; font-size: 16px; cursor: pointer; transition: 0.2s; min-width: 80px; }
+        .deposit-btn:hover { border-color: #6c5ce7; background: #22223a; }
+        .deposit-btn.selected { border-color: #6c5ce7; background: #2a2a4a; }
+        .bank-info { background: #0d0d14; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 3px solid #6c5ce7; }
+        .bank-info .label { color: #888; font-size: 12px; }
+        .bank-info .value { color: #fff; font-size: 16px; font-weight: 500; }
+        .bank-info .row { display: flex; justify-content: space-between; padding: 4px 0; }
+        .btn-primary { background: #6c5ce7; border: none; color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; transition: 0.2s; }
+        .btn-primary:hover { background: #5a4bd1; }
+        .history-list { list-style: none; }
+        .history-list li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1a1a2e; font-size: 14px; }
+        .history-list .key { color: #6c5ce7; font-weight: 500; }
+        .history-list .date { color: #666; font-size: 12px; }
+        .empty-state { text-align: center; color: #555; padding: 30px 0; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #12121a; border: 1px solid #333; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%; }
+        .modal-box h2 { color: #fff; margin-bottom: 16px; }
+        .modal-box .close { float: right; background: none; border: none; color: #888; font-size: 24px; cursor: pointer; }
+        .modal-box .hub-item { padding: 12px 0; border-bottom: 1px solid #1a1a2e; color: #fff; }
+        .modal-box .hub-item:last-child { border: none; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a1a2e; border: 1px solid #6c5ce7; padding: 12px 24px; border-radius: 8px; color: #fff; display: none; z-index: 2000; }
+        .toast.show { display: block; animation: fadeInUp 0.3s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 500px) { .product-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
-
 <div class="container">
-
-    <!-- ===== NAVBAR ===== -->
-    <div class="navbar">
-        <div class="logo">GET <span>KEY</span></div>
-        <div class="nav-links">
-            <span class="active">TRANG CHỦ</span>
-            <span>SẢN PHẨM</span>
-            <span>HƯỚNG DẪN</span>
-            <span>NAP TIỀN</span>
-            <span>LỊCH SỬ</span>
-            <span>HỖ TRỢ</span>
-        </div>
-    </div>
-
-    <!-- ===== HEADER ===== -->
     <div class="header">
-        <h1>GET <span>KEY</span></h1>
-        <div class="sub">NỀN TẢNG LẤY KEY MIỄN PHÍ</div>
-        <div class="desc">Hệ thống lấy key tự động nhanh chóng, an toàn và hoàn toàn miễn phí cho mọi người.</div>
-    </div>
-
-    <!-- ===== DIVIDER ===== -->
-    <hr class="divider" />
-
-    <!-- ===== ACTION ROW ===== -->
-    <div class="action-row">
-        <button class="btn-primary" id="getKeyNow">LẤY KEY NGAY</button>
-        <button class="btn-outline">HƯỚNG DẪN</button>
-    </div>
-
-    <!-- ===== DIVIDER ===== -->
-    <hr class="divider" />
-
-    <!-- ===== PRODUCTS ===== -->
-    <div class="section-label">SẢN PHẨM NỔI BẬT</div>
-    <div class="section-sub">Chọn sản phẩm bạn muốn lấy key</div>
-
-    <div class="product-list">
-
-        <!-- GalaxyHub -->
-        <div class="product-item">
-            <div class="product-info">
-                <div class="name"><i class="fas fa-galaxy"></i> GalaxyHub</div>
-                <div class="desc">Nền tảng hỗ trợ game &amp; tiện ích mạnh mẽ, tối ưu trải nghiệm.</div>
-            </div>
-            <button class="btn-get active" data-product="galaxy">LẤY KEY</button>
+        <div class="logo">Key<span>Hub</span></div>
+        <div class="nav">
+            <button class="active" data-tab="products">Sản phẩm</button>
+            <button data-tab="buykey">Mua key</button>
+            <button data-tab="history">Lịch sử</button>
         </div>
-
-        <!-- LunarHub -->
-        <div class="product-item">
-            <div class="product-info">
-                <div class="name"><i class="fas fa-moon"></i> LunarHub</div>
-                <div class="desc">Giải pháp toàn diện cho game thủ và người dùng công nghệ.</div>
-            </div>
-            <button class="btn-get" data-product="lunar">LẤY KEY</button>
-        </div>
-
-        <!-- NeonHub -->
-        <div class="product-item">
-            <div class="product-info">
-                <div class="name"><i class="fas fa-bolt"></i> NeonHub</div>
-                <div class="desc">Công cụ hiện đại, tốc độ cao, bảo mật và dễ sử dụng.</div>
-            </div>
-            <button class="btn-get" data-product="neon">LẤY KEY</button>
-        </div>
-
     </div>
 
-    <!-- ===== FOOTER ===== -->
-    <div class="footer">
-        <i class="fas fa-shield-alt"></i> Bảo mật tuyệt đối · Mỗi key chỉ 1 thiết bị
+    <!-- Products Panel - giữ nguyên GalaxyHub LunarHub NeonHub -->
+    <div id="products-panel" class="panel active">
+        <h3>Chọn sản phẩm</h3>
+        <div class="product-grid">
+            <div class="product-card" data-hub="GalaxyHub">
+                <div class="icon">🌌</div>
+                <div class="name">GalaxyHub</div>
+                <div class="sub">Key premium</div>
+            </div>
+            <div class="product-card" data-hub="LunarHub">
+                <div class="icon">🌙</div>
+                <div class="name">LunarHub</div>
+                <div class="sub">Key vip</div>
+            </div>
+            <div class="product-card" data-hub="NeonHub">
+                <div class="icon">💜</div>
+                <div class="name">NeonHub</div>
+                <div class="sub">Key pro</div>
+            </div>
+        </div>
     </div>
 
+    <!-- Buy Key Panel - thay thế hỗ trợ, không có hướng dẫn -->
+    <div id="buykey-panel" class="panel">
+        <h3>Nạp tiền mua key</h3>
+        <div class="deposit-grid">
+            <div class="deposit-row">
+                <button class="deposit-btn" data-amount="20000">20.000đ</button>
+                <button class="deposit-btn" data-amount="50000">50.000đ</button>
+                <button class="deposit-btn" data-amount="100000">100.000đ</button>
+            </div>
+            <div class="bank-info">
+                <div class="row"><span class="label">Ngân hàng</span><span class="value">ZaloPay</span></div>
+                <div class="row"><span class="label">Số tài khoản</span><span class="value">12455748</span></div>
+                <div class="row"><span class="label">Chủ tài khoản</span><span class="value">Nguyen Van Loc</span></div>
+                <div class="row"><span class="label">Nội dung CK</span><span class="value" style="font-size:12px; color:#6c5ce7;">Mã key + số tiền</span></div>
+            </div>
+            <button class="btn-primary" id="confirmDeposit">Xác nhận đã chuyển</button>
+        </div>
+    </div>
+
+    <!-- History Panel -->
+    <div id="history-panel" class="panel">
+        <h3>Lịch sử mua key</h3>
+        <ul class="history-list" id="historyList">
+            <li class="empty-state">Chưa có lịch sử mua key</li>
+        </ul>
+    </div>
 </div>
 
-<!-- ===== FONT AWESOME ===== -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<!-- Modal hiển thị hub khi ấn sản phẩm -->
+<div class="modal-overlay" id="hubModal">
+    <div class="modal-box">
+        <button class="close" id="closeModal">&times;</button>
+        <h2 id="modalTitle">GalaxyHub</h2>
+        <div id="modalContent">
+            <div class="hub-item">🌌 GalaxyHub - Key bản quyền cao cấp</div>
+            <div class="hub-item">⚡ Tốc độ tối ưu, bảo mật hàng đầu</div>
+            <div class="hub-item">🛡️ Hỗ trợ 24/7 qua ZaloPay</div>
+        </div>
+        <button class="btn-primary" style="margin-top:16px;" id="modalBuyBtn">Mua key ngay</button>
+    </div>
+</div>
 
-<!-- ===== JAVASCRIPT ===== -->
+<div class="toast" id="toast"></div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const getKeyBtn = document.getElementById('getKeyNow');
-        const productBtns = document.querySelectorAll('.btn-get');
+    const state = {
+        activeTab: 'products',
+        history: JSON.parse(localStorage.getItem('keyHistory')) || [],
+        currentHub: 'GalaxyHub'
+    };
 
-        async function fetchKey(product = 'galaxy') {
-            try {
-                const res = await fetch('/get-key', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ product })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    alert('🎉 Key: ' + data.key + '\nSản phẩm: ' + product.toUpperCase());
-                } else {
-                    alert('❌ ' + (data.error || 'Lỗi, thử lại.'));
-                }
-            } catch {
-                alert('❌ Lỗi kết nối, ông chủ.');
-            }
-        }
-
-        getKeyBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            fetchKey('galaxy');
-        });
-
-        productBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const product = this.getAttribute('data-product') || 'galaxy';
-                fetchKey(product);
-            });
+    // Tab switching
+    document.querySelectorAll('.nav button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const tab = this.dataset.tab;
+            state.activeTab = tab;
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(tab + '-panel').classList.add('active');
         });
     });
-</script>
 
+    // Product click -> show modal với đúng hub
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const hub = this.dataset.hub;
+            state.currentHub = hub;
+            document.getElementById('modalTitle').textContent = hub;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="hub-item">🚀 ${hub} - Key độc quyền</div>
+                <div class="hub-item">🔐 Bảo mật cấp cao, không chia sẻ</div>
+                <div class="hub-item">⏳ Hạn sử dụng 4 giờ</div>
+                <div class="hub-item">💳 Thanh toán qua ZaloPay</div>
+            `;
+            document.getElementById('hubModal').classList.add('active');
+        });
+    });
+
+    // Modal controls
+    document.getElementById('closeModal').addEventListener('click', () => {
+        document.getElementById('hubModal').classList.remove('active');
+    });
+    document.getElementById('hubModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+
+    // Modal buy button -> chuyển sang tab mua key
+    document.getElementById('modalBuyBtn').addEventListener('click', function() {
+        document.getElementById('hubModal').classList.remove('active');
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-tab="buykey"]').classList.add('active');
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('buykey-panel').classList.add('active');
+        state.activeTab = 'buykey';
+        showToast('Chuyển sang trang nạp tiền, ông chủ.');
+    });
+
+    // Deposit selection
+    let selectedAmount = 0;
+    document.querySelectorAll('.deposit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedAmount = parseInt(this.dataset.amount);
+            showToast('Đã chọn mệnh giá ' + selectedAmount.toLocaleString() + 'đ');
+        });
+    });
+
+    // Confirm deposit -> tạo key + lưu lịch sử
+    document.getElementById('confirmDeposit').addEventListener('click', function() {
+        if (!selectedAmount) {
+            showToast('Vui lòng chọn mệnh giá, ông chủ.');
+            return;
+        }
+        const key = 'galaxy' + Math.random().toString(36).slice(2, 8) + 
+                    Math.random().toString(36).slice(2, 6);
+        const now = new Date();
+        const historyEntry = {
+            key: key,
+            amount: selectedAmount,
+            hub: state.currentHub || 'GalaxyHub',
+            date: now.toLocaleDateString('vi-VN'),
+            time: now.toLocaleTimeString('vi-VN'),
+            timestamp: now.getTime()
+        };
+        state.history.unshift(historyEntry);
+        localStorage.setItem('keyHistory', JSON.stringify(state.history));
+        renderHistory();
+        showToast(`Key ${key} đã được tạo, ông chủ. Kiểm tra lịch sử.`);
+        selectedAmount = 0;
+        document.querySelectorAll('.deposit-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelector('[data-tab="history"]').click();
+    });
+
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        if (state.history.length === 0) {
+            list.innerHTML = '<li class="empty-state">Chưa có lịch sử mua key</li>';
+            return;
+        }
+        list.innerHTML = state.history.map(item => `
+            <li>
+                <div>
+                    <span class="key">${item.key}</span>
+                    <span style="color:#888;font-size:12px;margin-left:8px;">${item.hub}</span>
+                </div>
+                <div>
+                    <span style="color:#6c5ce7;">${item.amount.toLocaleString()}đ</span>
+                    <span class="date">${item.date} ${item.time}</span>
+                </div>
+            </li>
+        `).join('');
+    }
+    renderHistory();
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+</script>
 </body>
-    </html>
+</html>
