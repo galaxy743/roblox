@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onax</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center; padding: 20px; }
+        .container { max-width: 500px; width: 100%; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #222; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .logo { font-size: 26px; font-weight: 800; background: linear-gradient(90deg, #6c5ce7, #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        .auth-btn { background: transparent; border: 1px solid #333; color: #aaa; padding: 6px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .auth-btn:hover { border-color: #6c5ce7; color: #fff; background: #1a1a2e; }
+        .auth-btn.google { background: #fff; color: #222; border: none; font-weight: 500; }
+        .auth-btn.google:hover { background: #e8e8e8; }
+        .logout-btn { background: #1a1a2e; border: 1px solid #333; color: #aaa; padding: 6px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; }
+        .logout-btn:hover { border-color: #e74c3c; color: #e74c3c; background: #1a1a2e; }
+
+        .panel { display: none; animation: fadeIn 0.3s; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 16px; }
+        .panel-title span { color: #6c5ce7; }
+
+        .product-grid { display: flex; flex-direction: column; gap: 12px; }
+        .product-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: linear-gradient(145deg, #12121a, #1a1a2e); border: 1px solid #2a2a3e; border-radius: 14px; padding: 14px 18px; transition: 0.3s; }
+        .product-row:hover { border-color: #6c5ce7; }
+        .product-row .info { display: flex; align-items: center; gap: 14px; }
+        .product-row .info .icon { font-size: 28px; }
+        .product-row .info .name { color: #fff; font-weight: 600; font-size: 16px; }
+        .btn-getkey { background: #00b894; border: none; color: #fff; padding: 8px 20px; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s; }
+        .btn-getkey:hover { background: #00a381; transform: scale(1.05); box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #12121a; border: 1px solid #333; border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; animation: fadeIn 0.3s; text-align: center; }
+        .modal-box .close { float: right; background: none; border: none; color: #666; font-size: 28px; cursor: pointer; transition: 0.3s; }
+        .modal-box .close:hover { color: #fff; }
+        .modal-box .modal-icon { font-size: 48px; margin: 10px 0; }
+        .modal-box h2 { color: #fff; font-size: 22px; margin-bottom: 8px; }
+        .modal-box .modal-sub { color: #888; font-size: 14px; margin-bottom: 20px; }
+        .modal-box .key-display { background: #0a0a0f; border: 2px solid #00b894; border-radius: 12px; padding: 20px; font-size: 28px; font-weight: 700; color: #00b894; letter-spacing: 3px; margin: 16px 0; font-family: monospace; }
+        .modal-box .key-label { color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-primary { background: linear-gradient(90deg, #6c5ce7, #a29bfe); border: none; color: #fff; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 12px; }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3); }
+
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a1a2e; border: 1px solid #6c5ce7; padding: 14px 28px; border-radius: 12px; color: #fff; display: none; z-index: 2000; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+        .toast.show { display: block; animation: fadeInUp 0.3s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+
+        .nav-menu { display:flex; gap:8px; margin-bottom:20px; }
+        .nav-btn { flex:1; background:#12121a; border:1px solid #2a2a3e; color:#aaa; padding:11px 14px; border-radius:12px; font-weight:600; cursor:pointer; }
+        .nav-btn:hover, .nav-btn.active { border-color:#6c5ce7; color:#fff; background:#1a1a2e; }
+        .buy-box { background:linear-gradient(145deg,#12121a,#1a1a2e); border:1px solid #2a2a3e; border-radius:16px; padding:22px; text-align:center; }
+        .buy-box h2 { color:#fff; margin-bottom:8px; } .buy-box p { color:#999; margin-bottom:16px; line-height:1.5; }
+        .price-table { width:100%; border-collapse:collapse; margin-top:18px; }
+        .price-table th,.price-table td { padding:12px 10px; border-bottom:1px solid #2a2a3e; text-align:center; }
+        .price-table th { color:#a29bfe; background:#171724; } .price-table td { color:#e0e0e0; }
+        .tiktok-btn { display:inline-block; text-decoration:none; background:#fff; color:#111; padding:12px 20px; border-radius:12px; font-weight:700; }
+
+        @media (max-width: 450px) { .product-row { flex-wrap: wrap; gap: 10px; } .header { flex-direction: column; align-items: stretch; } .header-right { justify-content: flex-end; } }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">✦ Onax</div>
+        <div class="header-right">
+            <div id="authContainer"><div id="googleButton"></div></div>
+        </div>
+    </div>
+
+    <div class="nav-menu">
+        <button class="nav-btn active" data-panel="products-panel">Sản phẩm</button>
+        <button class="nav-btn" data-panel="buy-panel">Mua key</button>
+    </div>
+
+    <!-- Products Panel -->
+    <div id="products-panel" class="panel active">
+        <div class="panel-title">🔥 <span>Sản phẩm</span> nổi bật</div>
+        <div class="product-grid">
+            <div class="product-row">
+                <div class="info">
+                    <span class="icon">🌌</span>
+                    <div class="name">GalaxyHub</div>
+                </div>
+                <button class="btn-getkey" data-hub="GalaxyHub">Lấy Key</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="buy-panel" class="panel">
+        <div class="panel-title">🛒 <span>Mua key</span></div>
+        <div class="buy-box">
+            <p>Mua key ib TikTok mình.</p>
+            <a class="tiktok-btn" href="https://www.tiktok.com/@galaxy8143?_r=1&_t=ZS-99CDKkynM7G"
+               target="_blank" rel="noopener noreferrer">Inbox TikTok</a>
+
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Giá Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1 ngày</td><td>10.000</td></tr>
+                    <tr><td>7 ngày</td><td>40.000</td></tr>
+                    <tr><td>14 ngày</td><td>60.000</td></tr>
+                    <tr><td>30 ngày</td><td>100.000</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Key Result Modal -->
+<div class="modal-overlay" id="keyModal">
+    <div class="modal-box">
+        <button class="close" id="closeKeyModal">&times;</button>
+        <div class="modal-icon">🔑</div>
+        <h2>Key của bạn</h2>
+        <div class="modal-sub" id="keyModalSub">GalaxyHub</div>
+        <div class="key-display" id="keyDisplay">galaxy836</div>
+        <div class="key-label">✨ Key đã được tạo thành công</div>
+        <button class="btn-primary" id="keyModalCopy" style="background: #00b894; margin-top:12px;">📋 Sao chép key</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+        btn.classList.add('active'); document.getElementById(btn.dataset.panel).classList.add('active');
+    }));
+</script>
+<script>
+    // ===== GOOGLE AUTH (optional, chỉ để hiển thị logout) =====
+    const GOOGLE_CLIENT_ID =
+        '494147782210-q1krre0gl5uk465jg8ha2gpfl6siglus.apps.googleusercontent.com';
+
+    const auth = {
+        user: null,
+        isLoggedIn: false
+    };
+
+    let googleInitialized = false;
+
+    function initGoogle() {
+        if (googleInitialized) return;
+        if (!window.google || !google.accounts || !google.accounts.id) return;
+
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleLogin,
+            auto_select: false
+        });
+
+        googleInitialized = true;
+
+        if (!auth.isLoggedIn) {
+            renderGoogleButton();
+        }
+    }
+
+    const googleLoader = setInterval(() => {
+        if (window.google?.accounts?.id) {
+            initGoogle();
+            clearInterval(googleLoader);
+        }
+    }, 200);
+
+    function renderGoogleButton() {
+        const button = document.getElementById('googleButton');
+        if (!button || !googleInitialized) return;
+        button.innerHTML = '';
+        google.accounts.id.renderButton(button, {
+            theme: 'outline',
+            size: 'medium',
+            text: 'signin_with',
+            shape: 'pill',
+            width: 190
+        });
+    }
+
+    function handleGoogleLogin(response) {
+        try {
+            if (!response || !response.credential) {
+                showToast('❌ Không nhận được thông tin từ Google');
+                return;
+            }
+            const parts = response.credential.split('.');
+            if (parts.length !== 3) throw new Error('Google ID token không hợp lệ');
+
+            const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+            const json = decodeURIComponent(
+                atob(base64)
+                    .split('')
+                    .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                    .join('')
+            );
+            const payload = JSON.parse(json);
+
+            auth.user = {
+                name: payload.name || 'Người dùng Google',
+                email: payload.email || '',
+                googleId: payload.sub || ''
+            };
+            auth.isLoggedIn = true;
+
+            saveAuth();
+            updateAuthUI();
+            showToast(`👋 Chào ${auth.user.name}, đăng nhập thành công!`);
+        } catch (error) {
+            console.error('Google Login Error:', error);
+            showToast('❌ Đăng nhập Google thất bại');
+        }
+    }
+
+    function loadAuth() {
+        const saved = localStorage.getItem('authUser');
+        if (saved) {
+            try {
+                const user = JSON.parse(saved);
+                if (user && user.googleId) {
+                    auth.user = user;
+                    auth.isLoggedIn = true;
+                } else {
+                    localStorage.removeItem('authUser');
+                }
+            } catch (e) {
+                localStorage.removeItem('authUser');
+            }
+        }
+        updateAuthUI();
+    }
+
+    function saveAuth() {
+        if (auth.user) {
+            localStorage.setItem('authUser', JSON.stringify(auth.user));
+        } else {
+            localStorage.removeItem('authUser');
+        }
+    }
+
+    function updateAuthUI() {
+        const container = document.getElementById('authContainer');
+        if (!container) return;
+
+        if (auth.isLoggedIn && auth.user) {
+            container.innerHTML = `
+                <button class="logout-btn" id="logoutBtn" title="Đăng xuất">Đăng xuất</button>
+            `;
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        } else {
+            container.innerHTML = `<div id="googleButton"></div>`;
+            renderGoogleButton();
+        }
+    }
+
+    function logout() {
+        auth.user = null;
+        auth.isLoggedIn = false;
+        saveAuth();
+        if (window.google?.accounts?.id) {
+            google.accounts.id.disableAutoSelect();
+        }
+        updateAuthUI();
+        showToast('Đã đăng xuất.');
+    }
+
+    loadAuth();
+
+    // ===== GENERATE KEY (không cần đăng nhập) =====
+    function generateKey() {
+        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let key = 'galaxy';
+        for (let i = 0; i < 6; i++) key += chars[Math.floor(Math.random() * chars.length)];
+        return key;
+    }
+
+    function showKeyModal(hub) {
+        const key = generateKey();
+        document.getElementById('keyDisplay').textContent = key;
+        document.getElementById('keyModalSub').textContent = hub;
+        document.getElementById('keyModal').classList.add('active');
+    }
+
+    document.getElementById('closeKeyModal').addEventListener('click', () => {
+        document.getElementById('keyModal').classList.remove('active');
+    });
+    document.getElementById('keyModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+
+    document.getElementById('keyModalCopy').addEventListener('click', function() {
+        const key = document.getElementById('keyDisplay').textContent;
+        navigator.clipboard.writeText(key).then(() => {
+            showToast('📋 Đã sao chép key!');
+        }).catch(() => {
+            const textarea = document.createElement('textarea');
+            textarea.value = key;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('📋 Đã sao chép key!');
+        });
+    });
+
+    document.querySelectorAll('.btn-getkey').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showKeyModal(this.dataset.hub);
+        });
+    });
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+</script>
+</body>
+</html>
