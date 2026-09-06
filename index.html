@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ONAX - Lấy Key</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
+body{min-height:100vh;background:linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 100%);color:#e0e0e0;display:flex;justify-content:center;align-items:center;padding:20px}
+.box{width:100%;max-width:460px;background:rgba(18,18,30,.96);border:1px solid #29293d;border-radius:18px;padding:30px 24px;text-align:center;box-shadow:0 15px 50px rgba(0,0,0,.45)}
+.logo{font-size:30px;font-weight:800;background:linear-gradient(90deg,#6c5ce7,#a29bfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+h1{font-size:22px;color:#fff;margin-bottom:8px}
+.sub{color:#888;font-size:14px;line-height:1.5;margin-bottom:22px}
+.status{display:none;background:#101019;border:1px solid #333;border-radius:12px;padding:16px;margin:18px 0}
+.status.show{display:block}
+.label{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:2px}
+.key{font-family:monospace;font-size:25px;font-weight:700;color:#00b894;letter-spacing:2px;margin:10px 0;word-break:break-all}
+button{width:100%;border:0;border-radius:11px;padding:13px 18px;font-size:14px;font-weight:700;cursor:pointer;color:#fff;background:#00b894;transition:.2s}
+button:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.copy{display:none;margin-top:10px;background:#6c5ce7}
+.copy.show{display:block}
+.note{font-size:12px;color:#666;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">ONAX</div>
+  <h1>Nhận Key</h1>
+  <p class="sub">Bạn đã hoàn thành bước vượt Link4m.<br>Nhấn nút bên dưới để nhận Key.</p>
+
+  <button id="getBtn">🔑 NHẬN KEY</button>
+
+  <div class="status" id="result">
+    <div class="label">Key của bạn</div>
+    <div class="key" id="key">Đang lấy...</div>
+  </div>
+
+  <button class="copy" id="copyBtn">📋 SAO CHÉP KEY</button>
+  <div class="note">ONAX • Key 1 ngày</div>
+</div>
+
+<script>
+/*
+  Trang này là ĐÍCH để ông chủ nhập vào Link4m.
+  Khi hệ thống tạo key riêng đã có API, chỉ cần thay phần getKey()
+  để gọi API đó. Không tạo key giả ở phía trình duyệt.
+*/
+async function getKey(){
+  const result=document.getElementById('result');
+  const keyEl=document.getElementById('key');
+  const copyBtn=document.getElementById('copyBtn');
+
+  result.classList.add('show');
+  keyEl.textContent='Đang lấy key...';
+
+  try {
+    // Web tạo key ONAX
+    const r = await fetch('https://onax.onrender.com/api/create_key?days=1');
+    const data = await r.json();
+
+    if (!r.ok || !data.key) {
+      throw new Error(data.error || 'Không nhận được Key');
+    }
+
+    keyEl.textContent = data.key;
+    copyBtn.classList.add('show');
+  } catch (e) {
+    keyEl.textContent = 'Không thể lấy Key';
+    copyBtn.classList.remove('show');
+    console.error(e);
+  }
+}
+
+document.getElementById('getBtn').addEventListener('click',getKey);
+
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+  const key=document.getElementById('key').textContent;
+  if(!key || key.includes('Chưa kết nối')) return;
+  await navigator.clipboard.writeText(key);
+  document.getElementById('copyBtn').textContent='✅ Đã sao chép';
+  setTimeout(()=>document.getElementById('copyBtn').textContent='📋 SAO CHÉP KEY',1500);
+});
+</script>
+</body>
+</html>
